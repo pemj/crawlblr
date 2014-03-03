@@ -216,7 +216,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                         rebloggedFrom = ""
                     else:
                         rebloggedFrom = rebloggedFrom[0].get('href').replace("http://", "").replace(".tumblr.com", "")                       
-                    dataQ.push((identity, rebloggedFrom, postNumber, noteType))
+                    dataQ.put((identity, rebloggedFrom, postNumber, noteType))
 
                 nextNotes = notes("li", class_="note more_notes_link_container")
                 if (not nextNotes):
@@ -252,9 +252,9 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
             if debug:
                 f.write("post written: "+str(cargs))
 
-            dataQ.push(cargs)
+            dataQ.put(cargs)
   
             
-    dataQ.push((username, updated, postCount))        
+    dataQ.put((username, updated, postCount))        
     return "yeah"
 
