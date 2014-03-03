@@ -1,0 +1,11 @@
+*~
+*.swp
+nohup.out
+time/*
+sqlite3/*
+time/*
+logfile_*
+multiprocessing
+*.pyc
+__pycache__/*
+re
