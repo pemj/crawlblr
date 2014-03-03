@@ -1,7 +1,10 @@
 #do some stuff with the db and a message queue here
 from datetime import datetime as time
+import sqlite3
+import os
 #import config
 def dbQ(queue, db):
+    pid = os.getpid()
     #temporary while we figure out how to get the database sharing 
     #figured out
     conn = sqlite3.connect('database/weekday.db')
