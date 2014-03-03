@@ -27,17 +27,17 @@ def userize1(userDeck, num):
 
 #actual function, takes in a list of users to visit and users visited
 #finds more users, adds user, post, and note info
-def userize(userDeck, usersSeen):
+def userize(userDeck, usersSeen, dataQ):
     while(1):        
         if(userDeck):
-            result = crawlUser(userDeck, usersSeen)
+            result = crawlUser(userDeck, usersSeen, dataQ)
         else: 
             time.sleep(2)
 
 #wraps a call to dbQ.  Stub functionality for now.
 def dataEntry(userDeck):
     while(True):
-        dbQ(userDeck)
+        dbQ(userDeck, 1)
         time.sleep(1)
 
 

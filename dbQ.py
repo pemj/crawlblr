@@ -2,6 +2,11 @@
 from datetime import datetime as time
 import config
 def dbQ(queue, db):
+    #temporary while we figure out how to get the database sharing 
+    #figured out
+    conn = sqlite3.connect('database/weekday.db')
+    db = conn.cursor()
+    #logging
     f = open(('database/logfile_db_' + str(pid)), 'w')
     while(True):
         dbEntry = queue.get(True);
@@ -19,5 +24,8 @@ def dbQ(queue, db):
             f.write("Post inserted: " + str(dbEntry) + " at " + str(time.now())) 
         else:
             f.write("Unrecognized entry type: " + str(dbEntry) + " at " + str(time.now())) 
-        db.commit()
-
+        #we commit to the database connection, not the cursor
+        #so, at the minimum, we'll need to pass the connection
+        conn.commit()
+        #we do close at the cursor though, so there's that.
+        db.close()
