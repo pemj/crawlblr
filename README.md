@@ -1,12 +1,5 @@
 Current status:
-seems to work.  We only have it running with one database worker, but it seems to be running okay.  We'll see how it actually runs on ACISS soon.
-
-BELAY THAT
-just ran into this guy:
-
-crawlblr/dbQ.py", line 35, in dbQ
-sqlite3.OperationalError: disk I/O error
-I guess we can catch that error and retry?  Who knows what the hell this is all about though.
+seems to work.  We only have it running with one database worker, but the crawlers seem like they're trucking along.  We'll see how it actually runs on ACISS soon.  Had one error, but it was a stupid thing I hit by deleting a folder on accident, we look fine now.
 
 
 division of labor:
