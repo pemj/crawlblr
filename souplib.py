@@ -30,6 +30,7 @@ def crawlUser(userDeck, usersSeen, dataQ):
     
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
     blogString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/info?api_key="+apikey
+    #compile some regular expressions for rapid searches later
     nextPattern = re.compile('.*tumblrReq\.open(\(.*?\))')
     datePattern = re.compile('.*\"date\"\:\"(.*?\")')
     sourcePattern = re.compile('.*source_url\"\:\"http\:\\\\/\\\\/(.*?\.)')
@@ -37,6 +38,8 @@ def crawlUser(userDeck, usersSeen, dataQ):
     postPattern = re.compile('.*\"posts\"\:(.*?,)')
     updatedPattern = re.compile('.*\"updated\"\:(.*?,)')
     notePattern = re.compile('.*\"note_count\"\:(.*?,)')
+    
+    #Open first user page
     fChecker = True
     for i in range(10):
         try:
@@ -56,6 +59,8 @@ def crawlUser(userDeck, usersSeen, dataQ):
     if fChecker:
         #conn.close()
         return "nope"
+        
+    #parse user page
     infoBlob = BeautifulSoup(blogject).prettify()
     blogject.close()
     postCount = re.search(postPattern, infoBlob)
@@ -73,11 +78,14 @@ def crawlUser(userDeck, usersSeen, dataQ):
     hasNotes = True
     blogURL = "http://"+username+".tumblr.com/page/"
     pageNum = 0
+
     #while our page has posts on it
     f.write(str(datetime.datetime.today()))
     while(hasNotes):
         f.write("entering page " + blogURL+(str(pageNum))+"\n")
         f.write(str(datetime.datetime.today()))
+
+        #try to open the post page
         fChecker = True
         for i in range(10):
             try:
@@ -86,7 +94,7 @@ def crawlUser(userDeck, usersSeen, dataQ):
                 f.write("404: unSouped"+blogURL+str(pageNum)+"\n")
                 continue
             except error.URLError:
-                f.write("name error, unSoupede:")
+                f.write("name error, unSouped:")
             except socket.error:
                 f.write("socket error, :")
             else:
@@ -96,6 +104,7 @@ def crawlUser(userDeck, usersSeen, dataQ):
             #conn.commit()
             #conn.close()
             return "nope"
+
         pageNum += 1
         #store this for when we have to extract note strings from a page
         pageName = unSouped.geturl()
@@ -112,6 +121,7 @@ def crawlUser(userDeck, usersSeen, dataQ):
             f.write(str(datetime.datetime.today()))
             #something here is totally amiss.
             hasNotes = True
+
             #open the notes page for that post
             #f.write("opening post"+ post.get('href')+"\n")
             fChecker = True
@@ -130,12 +140,15 @@ def crawlUser(userDeck, usersSeen, dataQ):
                     break 
             if fChecker:
                 continue
+            
             preURL = notePage.geturl().split("/post/")
             postNumber = preURL[1].split("/")[0].replace("#notes", "")
             preURL = preURL[0]
             notes = BeautifulSoup(notePage)
             notePage.close()
             uristring = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/posts?api_key="+apikey+"&id="+postNumber
+
+            #open an api page to get some post metadata
             fChecker = True
             for i in range(10):
                 try:
@@ -151,6 +164,7 @@ def crawlUser(userDeck, usersSeen, dataQ):
                     break 
             if fChecker:
                 continue
+
             apiBlob = BeautifulSoup(uribject).prettify()
             uribject.close()
             postDate = re.search(datePattern, apiBlob).groups(1)[0]
