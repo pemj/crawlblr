@@ -13,16 +13,17 @@ import multiprocessing
 degree=4
 
 #multiprocess functionaliy checking        
-def userize1(userDeck, num):
+def userize1(userDeck, dataQ, num):
     f = open(("logfile_" + str(num)), "w")
     while(1):        
         if(userDeck):
             f.write(userDeck.get())
-            userDeck.put("name"+str(num))
-            userDeck.put("name2"+str(num))
+            userDeck.put("name"+str(num)+"\n")
+            userDeck.put("name2"+str(num)+"\n")
+            dataQ.put("wakka wakka"+"\n")
             time.sleep(1)
         else: 
-            f.write("fail")
+            f.write("fail\n")
             time.sleep(5)
 
 #actual function, takes in a list of users to visit and users visited
@@ -54,7 +55,7 @@ def f1():
     pool.apply_async(dataEntry, [databaseQ])
     for (i) in range(1,(degree-1)):
         #the True is for debugging.  Pass False when we're finished
-        pool.apply_async(userize, [userDeck, usersSeen, databaseQ, True])
+        pool.apply_async(userize1, [userDeck, databaseQ, i])#usersSeen, databaseQ, True])
     pool.close()
     pool.join()
 
