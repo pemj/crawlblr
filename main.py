@@ -53,7 +53,8 @@ def f1():
     pool = multiprocessing.Pool(processes=degree)
     pool.apply_async(dataEntry, [databaseQ])
     for (i) in range(1,(degree-1)):
-        pool.apply_async(userize, [userDeck, usersSeen, databaseQ])
+        #the True is for debugging.  Pass False when we're finished
+        pool.apply_async(userize, [userDeck, usersSeen, databaseQ, True])
     pool.close()
     pool.join()
 
