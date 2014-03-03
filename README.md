@@ -1,5 +1,6 @@
 Current status:
-does not work.  Curious.  Going to add some debugging statements to dbQ, but, at the moment, it doesn't seem to be opening a file to write.  Perhaps an issue with the threading?  Only one instance of crawlUser seems to open.
+seems to work.  We only have it running with one database worker, but it seems to be running okay.  We'll see how it actually runs on ACISS soon.
+
 
 
 division of labor:
