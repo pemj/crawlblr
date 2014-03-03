@@ -27,10 +27,10 @@ def userize1(userDeck, num):
 
 #actual function, takes in a list of users to visit and users visited
 #finds more users, adds user, post, and note info
-def userize(userDeck, usersSeen, dataQ):
+def userize(userDeck, usersSeen, dataQ, debug):
     while(1):        
         if(userDeck):
-            result = crawlUser(userDeck, usersSeen, dataQ)
+            result = crawlUser(userDeck, usersSeen, dataQ, debug)
         else: 
             time.sleep(2)
 
