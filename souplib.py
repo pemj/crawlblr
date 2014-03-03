@@ -1,28 +1,33 @@
 from urllib import request, error
 import socket
-from importer import import_path
-import_path('/home/users/pem/crawlblr/beautifulsoup/bs4')
+#from importer import import_path
+#import_path('/home/users/pem/crawlblr/beautifulsoup/bs4')
 from bs4 import BeautifulSoup
 import multiprocessing
 import re
-import sqlite3
-import datetime
+#import sqlite3
+#import datetime
 from time import sleep
 import os
 #for some user
 
 
 
-def crawlUser(userDeck, usersSeen):
+def crawlUser(userDeck, usersSeen, dataQ):
+    try:
+        username = userDeck.get()
+    except queue.Empty:
+        return "nope"
     if hasattr(os, 'getppid'):  # only available on Unix
         pid = os.getppid()
         print('parent process:', pid)
     pid = os.getpid()
     print('process id:', pid)
 
-    conn = sqlite3.connect('/cs/groupprojects/cis632/pem/database/weekday.db')
-    c = conn.cursor()
-    f = open(('/cs/groupprojects/cis632/pem/database/logfile_'+str(pid)), 'w')
+    #conn = sqlite3.connect('/cs/groupprojects/cis632/pem/database/weekday.db')
+    #c = conn.cursor()
+    f = open(('database/logfile_'+str(pid)), 'w')
+    
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
     blogString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/info?api_key="+apikey
     nextPattern = re.compile('.*tumblrReq\.open(\(.*?\))')
@@ -49,7 +54,7 @@ def crawlUser(userDeck, usersSeen):
             fChecker = False
             break 
     if fChecker:
-        conn.close()
+        #conn.close()
         return "nope"
     infoBlob = BeautifulSoup(blogject).prettify()
     blogject.close()
@@ -88,8 +93,8 @@ def crawlUser(userDeck, usersSeen):
                 fChecker = False
                 break 
         if fChecker:
-            conn.commit()
-            conn.close()
+            #conn.commit()
+            #conn.close()
             return "nope"
         pageNum += 1
         #store this for when we have to extract note strings from a page
@@ -196,13 +201,14 @@ def crawlUser(userDeck, usersSeen):
                         rebloggedFrom = ""
                     else:
                         rebloggedFrom = rebloggedFrom[0].get('href').replace("http://", "").replace(".tumblr.com", "")                       
-                    theseArgs.append((identity, rebloggedFrom, postNumber, noteType))
-                    f.write("note: "+str(theseArgs) + "\n")
+                    dataQ.push((identity, rebloggedFrom, postNumber, noteType))
+                    #theseArgs.append((identity, rebloggedFrom, postNumber, noteType))
+                    #f.write("note: "+str(theseArgs) + "\n")
                     #break
-                for notepiece in theseArgs:
-                    c.execute('INSERT INTO notes (username, rebloggedFrom, postID, type) ' +
-                              'VALUES (?,?,?,?);', notepiece)   
-                conn.commit()
+                #for notepiece in theseArgs:
+                    #c.execute('INSERT INTO notes (username, rebloggedFrom, postID, type) ' +
+                    #              'VALUES (?,?,?,?);', notepiece)   
+                #conn.commit()
                 nextNotes = notes("li", class_="note more_notes_link_container")
                 if (not nextNotes):
                     break
@@ -231,13 +237,14 @@ def crawlUser(userDeck, usersSeen):
                 nextNotes = []
             cargs = (username, postSource, postNumber, postType, postDate, noteCount)
             f.write("post written: "+str(cargs))
-            c.execute('insert into posts values (?,?,?,?,?, ?)', cargs)   
+            dataQ.push(cargs)
+            #c.execute('insert into posts values (?,?,?,?,?, ?)', cargs)   
   
             
-            
-    c.execute('insert into users values (?,?,?)', 
-                      (username, updated, postCount))
-    conn.commit()
-    conn.close()
+    dataQ.push((username, updated, postCount))        
+    #c.execute('insert into users values (?,?,?)', 
+    #                  (username, updated, postCount))
+    #conn.commit()
+    #conn.close()
     return "yeah"
 
