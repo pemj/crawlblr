@@ -1,11 +1,8 @@
 from urllib import request, error
 import socket
-#from importer import import_path
-#import_path('/home/users/pem/crawlblr/beautifulsoup/bs4')
 from bs4 import BeautifulSoup
 import multiprocessing
 import re
-#import sqlite3
 #import datetime
 from time import sleep
 import os
@@ -13,7 +10,7 @@ import os
 
 
 
-def crawlUser(userDeck, usersSeen, dataQ):
+def crawlUser(userDeck, usersSeen, dataQ, debug):
     try:
         username = userDeck.get()
     except queue.Empty:
@@ -23,9 +20,6 @@ def crawlUser(userDeck, usersSeen, dataQ):
         print('parent process:', pid)
     pid = os.getpid()
     print('process id:', pid)
-
-    #conn = sqlite3.connect('/cs/groupprojects/cis632/pem/database/weekday.db')
-    #c = conn.cursor()
     f = open(('database/logfile_'+str(pid)), 'w')
     
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
@@ -57,7 +51,6 @@ def crawlUser(userDeck, usersSeen, dataQ):
             fChecker = False
             break 
     if fChecker:
-        #conn.close()
         return "nope"
         
     #parse user page
@@ -80,10 +73,12 @@ def crawlUser(userDeck, usersSeen, dataQ):
     pageNum = 0
 
     #while our page has posts on it
-    f.write(str(datetime.datetime.today()))
-    while(hasNotes):
-        f.write("entering page " + blogURL+(str(pageNum))+"\n")
+    if debug:
         f.write(str(datetime.datetime.today()))
+    while(hasNotes):
+        if(debug):
+            f.write("entering page " + blogURL+(str(pageNum))+"\n")
+            f.write(str(datetime.datetime.today()))
 
         #try to open the post page
         fChecker = True
@@ -101,8 +96,6 @@ def crawlUser(userDeck, usersSeen, dataQ):
                 fChecker = False
                 break 
         if fChecker:
-            #conn.commit()
-            #conn.close()
             return "nope"
 
         pageNum += 1
@@ -115,15 +108,18 @@ def crawlUser(userDeck, usersSeen, dataQ):
         unSouped.close()
         hasNotes = False
         #for each post in a page
-        #f.write("begin post for-loop")
+        if debug:
+            f.write("begin post for-loop\n")
         for post in page.find_all(href=re.compile(noteString)):
-            f.write("datetime, post:")
-            f.write(str(datetime.datetime.today()))
-            #something here is totally amiss.
+            if debug:
+                f.write("datetime, post:")
+                f.write(str(datetime.datetime.today()))
+            #something here is totally amiss?
             hasNotes = True
 
+            if debug:
+                f.write("opening post"+ post.get('href')+"\n")
             #open the notes page for that post
-            #f.write("opening post"+ post.get('href')+"\n")
             fChecker = True
             for i in range(10):
                 try:
@@ -178,11 +174,14 @@ def crawlUser(userDeck, usersSeen, dataQ):
             postType = postType.groups(1)[0].rstrip('\"')
             #for each fifty-note page
             while (1):
-                f.write("datetime, notepage:")
-                f.write(str(datetime.datetime.today())+"\n")
+                if debug:
+                    f.write("datetime, notepage:")
+                    f.write(str(datetime.datetime.today())+"\n")
+
                 noteChunk = notes("ol", class_="notes")
                 if not noteChunk:
-                    #f.write("breaking via noteChunk\n")
+                    if debug:
+                        f.write("breaking via noteChunk\n")
                     break
                 noteChunk = noteChunk[0]
                 #for each note on that page
@@ -216,13 +215,7 @@ def crawlUser(userDeck, usersSeen, dataQ):
                     else:
                         rebloggedFrom = rebloggedFrom[0].get('href').replace("http://", "").replace(".tumblr.com", "")                       
                     dataQ.push((identity, rebloggedFrom, postNumber, noteType))
-                    #theseArgs.append((identity, rebloggedFrom, postNumber, noteType))
-                    #f.write("note: "+str(theseArgs) + "\n")
-                    #break
-                #for notepiece in theseArgs:
-                    #c.execute('INSERT INTO notes (username, rebloggedFrom, postID, type) ' +
-                    #              'VALUES (?,?,?,?);', notepiece)   
-                #conn.commit()
+
                 nextNotes = notes("li", class_="note more_notes_link_container")
                 if (not nextNotes):
                     break
@@ -230,7 +223,10 @@ def crawlUser(userDeck, usersSeen, dataQ):
                 localText = re.search(nextPattern, localText)
                 localText = localText.groups(1)[0].split("/")[3].rstrip("\',true)")
                 localText = preURL+"/notes/"+postNumber+"/"+localText
-                f.write("localText: "+localText+"\n")
+
+                if debug:
+                    f.write("localText: "+localText+"\n")
+
                 fChecker = True
                 for i in range(10):
                     try:
@@ -250,15 +246,13 @@ def crawlUser(userDeck, usersSeen, dataQ):
                 localbject.close()
                 nextNotes = []
             cargs = (username, postSource, postNumber, postType, postDate, noteCount)
-            f.write("post written: "+str(cargs))
+
+            if debug:
+                f.write("post written: "+str(cargs))
+
             dataQ.push(cargs)
-            #c.execute('insert into posts values (?,?,?,?,?, ?)', cargs)   
   
             
     dataQ.push((username, updated, postCount))        
-    #c.execute('insert into users values (?,?,?)', 
-    #                  (username, updated, postCount))
-    #conn.commit()
-    #conn.close()
     return "yeah"
 
