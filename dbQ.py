@@ -1,6 +1,6 @@
 #do some stuff with the db and a message queue here
 from datetime import datetime as time
-import config
+#import config
 def dbQ(queue, db):
     #temporary while we figure out how to get the database sharing 
     #figured out
