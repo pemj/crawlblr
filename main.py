@@ -64,6 +64,7 @@ def main():
     
     conn = sqlite3.connect('database/weekday.db')
     c = conn.cursor()
+    #c.execute('''PRAGMA journal_mode = OFF''')
     c.execute('''create table if not exists users
     (username text, lastUpdated text, postCount integer)''')
     c.execute('''create table if not exists posts

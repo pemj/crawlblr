@@ -1,13 +1,8 @@
 #do some stuff with the db and a message queue here
 from datetime import datetime as time
-<<<<<<< HEAD
-import sqlite3
-import os
-=======
 import os
 import sqlite3
 import multiprocessing
->>>>>>> 5b48364c4f2feeb0d8d4268a955c01ad4e2a7c1b
 #import config
 def dbQ(queue, db):
     pid = os.getpid()
