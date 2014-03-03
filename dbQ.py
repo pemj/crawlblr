@@ -1,5 +1,6 @@
 #do some stuff with the db and a message queue here
 from datetime import datetime as time
+import config
 def dbQ(queue, db):
     f = open(('database/logfile_db_' + str(pid)), 'w')
     while(True):
