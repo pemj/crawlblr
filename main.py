@@ -15,6 +15,7 @@ degree=4
 #multiprocess functionaliy checking        
 def userize1(userDeck, dataQ, num):
     f = open(("logfile_" + str(num)), "w")
+    f.write("begin")
     while(1):        
         if(userDeck):
             f.write(userDeck.get())
@@ -23,6 +24,7 @@ def userize1(userDeck, dataQ, num):
             dataQ.put("wakka wakka"+"\n")
             time.sleep(1)
         else: 
+            userDeck.put("failure")
             f.write("fail\n")
             time.sleep(5)
 
@@ -38,6 +40,7 @@ def userize(userDeck, usersSeen, dataQ, debug):
 #wraps a call to dbQ.  Stub functionality for now.
 def dataEntry(dataDeck):
     while(True):
+        time.sleep(5)
         dbQ(dataDeck, 1)
         time.sleep(10)
 
