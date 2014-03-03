@@ -9,20 +9,19 @@ import time
 import sqlite3
 from souplib import crawlUser
 from dbQ import dbQ
-from multiprocessing import Process, Manager
+import multiprocessing
 degree=4
 
 #multiprocess functionaliy checking        
 def userize1(userDeck, dataQ, num):
     f = open(("logfile_" + str(num)), "w")
     f.write("begin")
-    while(1):        
-        time.sleep(3)
+    while(True):        
         f.write(userDeck.get())
         userDeck.put("name1_"+str(num)+"\n")
         userDeck.put("name2_"+str(num)+"\n")
         dataQ.put("wakka wakka"+"\n")
-
+    f.close()
 #actual function, takes in a list of users to visit and users visited
 #finds more users, adds user, post, and note info
 def userize(userDeck, usersSeen, dataQ, debug):
@@ -34,28 +33,30 @@ def userize(userDeck, usersSeen, dataQ, debug):
 
 #wraps a call to dbQ.  Stub functionality for now.
 def dataEntry(dataDeck, debug):
+    time.sleep(5)
     while(True):
-        time.sleep(5)
-        dbQ(dataDeck, 1)
-        time.sleep(10)
+        if dbQ:
+            dbQ(dataDeck, 1)
+        else:
+            return
 
 
 def f1():
-    with Manager() as manager:
-        userDeck = manager.Queue()
-        databaseQ = manager.Queue()
-        userDeck.put('dduane')
-        usersSeen = manager.dict()
-        usersSeen['dduane'] = 1
-        d = Process(target=dataEntry, args=(databaseQ, 1))
-        d.start()
-        ls = []
-        for i in range(degree):
-            ls.append(Process(target=userize1, args=(userDeck, databaseQ, i)))
-            ls[i].start()
-            time.sleep(6)
-        for i in ls:
-            i.join()
+    manager = multiprocessing.Manager()
+    userDeck = manager.Queue()
+    databaseQ = manager.Queue()
+    userDeck.put('dduane')
+    usersSeen = manager.dict()
+    usersSeen['dduane'] = 1
+    d = multiprocessing.Process(target=dataEntry, args=(databaseQ, 1))
+    d.start()
+    ls = []
+    for i in range(degree):
+        ls.append(multiprocessing.Process(target=userize1, args=(userDeck, databaseQ, i)))
+        ls[i].start()
+        time.sleep(2)
+    for i in ls:
+        i.join()
 
             
 def main():

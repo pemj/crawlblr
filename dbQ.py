@@ -2,6 +2,7 @@
 from datetime import datetime as time
 import os
 import sqlite3
+import multiprocessing
 #import config
 def dbQ(queue, db):
     pid = os.getpid()
@@ -14,7 +15,7 @@ def dbQ(queue, db):
     f.write("dbQ start\n")
     
     while(True):
-        dbEntry = queue.get(True);
+        dbEntry = queue.get();
         if len(dbEntry) == 3:
             db.execute('INSERT INTO users ' +
                        'VALUES (?,?,?);', dbEntry)
@@ -28,7 +29,7 @@ def dbQ(queue, db):
                        'VALUES (?,?,?,?,?,?);', dbEntry)
             f.write("Post inserted: " + str(dbEntry) + " at " + str(time.now())) 
         else:
-            f.write("Unrecognized entry type: " + str(dbEntry) + " at " + str(time.now())) 
+            f.write("Unrecognized entry type: " + str(dbEntry) + " at " + str(time.now())+ "\n") 
         #we commit to the database connection, not the cursor
         #so, at the minimum, we'll need to pass the connection
         conn.commit()
