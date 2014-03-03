@@ -1,3 +1,7 @@
+Current status:
+does not work.  Curious.  Going to add some debugging statements to dbQ, but, at the moment, it doesn't seem to be opening a file to write.  Perhaps an issue with the threading?  Only one instance of crawlUser seems to open.
+
+
 division of labor:
 
 main.py acts as a shared memory management server.  It has charge of three data structures shared between processes, enumerated as follows.
