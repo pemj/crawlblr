@@ -35,10 +35,10 @@ def userize(userDeck, usersSeen, dataQ, debug):
             time.sleep(2)
 
 #wraps a call to dbQ.  Stub functionality for now.
-def dataEntry(userDeck):
+def dataEntry(dataDeck):
     while(True):
-        dbQ(userDeck, 1)
-        time.sleep(1)
+        dbQ(dataDeck, 1)
+        time.sleep(10)
 
 
 def f1():

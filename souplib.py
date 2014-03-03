@@ -21,6 +21,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
     pid = os.getpid()
     print('process id:', pid)
     f = open(('database/logfile_'+str(pid)), 'w')
+    f.write("well we're here eh\n")
     
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
     blogString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/info?api_key="+apikey
@@ -51,6 +52,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
             fChecker = False
             break 
     if fChecker:
+        f.write("unknown error in blogString\n")
         return "nope"
         
     #parse user page

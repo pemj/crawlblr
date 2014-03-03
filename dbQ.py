@@ -8,6 +8,8 @@ def dbQ(queue, db):
     db = conn.cursor()
     #logging
     f = open(('database/logfile_db_' + str(pid)), 'w')
+    f.write("dbQ start\n")
+    
     while(True):
         dbEntry = queue.get(True);
         if len(dbEntry) == 3:
