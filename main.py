@@ -68,7 +68,8 @@ def main():
     (poster text, source text, postID text, type text, date text, noteCount integer)''')
     c.execute('''create table if not exists notes
     (username text, rebloggedFrom text, postID text, type text)''')
-    conn.close()
+    conn.commit()
+    c.close()
     f1()
 
 if __name__ == '__main__':
