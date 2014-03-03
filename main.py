@@ -38,7 +38,7 @@ def dataEntry(dataDeck, debug):
         if dbQ:
             dbQ(dataDeck, 1)
         else:
-            return
+            time.sleep(5)
 
 
 def f1():
@@ -52,7 +52,8 @@ def f1():
     d.start()
     ls = []
     for i in range(degree):
-        ls.append(multiprocessing.Process(target=userize1, args=(userDeck, databaseQ, i)))
+        ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, True)))
+        #ls.append(multiprocessing.Process(target=userize1, args=(userDeck, databaseQ, i)))
         ls[i].start()
         time.sleep(2)
     for i in ls:
