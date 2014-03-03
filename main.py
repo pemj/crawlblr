@@ -33,7 +33,7 @@ def userize(userDeck, usersSeen, dataQ, debug):
             time.sleep(2)
 
 #wraps a call to dbQ.  Stub functionality for now.
-def dataEntry(dataDeck):
+def dataEntry(dataDeck, debug):
     while(True):
         time.sleep(5)
         dbQ(dataDeck, 1)
@@ -47,11 +47,11 @@ def f1():
         userDeck.put('dduane')
         usersSeen = manager.dict()
         usersSeen['dduane'] = 1
-        d = Process(target=dataEntry, args=(databaseQ))
+        d = Process(target=dataEntry, args=(databaseQ, 1))
         d.start()
         ls = []
         for i in range(degree):
-            ls.append(Process(target=userize1, args=(userDeck, databaseQ, i)
+            ls.append(Process(target=userize1, args=(userDeck, databaseQ, i)))
             ls[i].start()
             time.sleep(6)
         for i in ls:
