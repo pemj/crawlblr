@@ -9,3 +9,4 @@ multiprocessing
 *.pyc
 __pycache__/*
 re
+venv.bash
