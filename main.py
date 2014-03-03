@@ -7,9 +7,10 @@ from collections import deque
 import re
 import time
 import sqlite3
-#from souplib import crawlUser
+from souplib import crawlUser
+from dbQ import dbQ
 import multiprocessing
-degree=3
+degree=4
 
 #multiprocess functionaliy checking        
 def userize1(userDeck, num):
@@ -33,6 +34,11 @@ def userize(userDeck, usersSeen):
         else: 
             time.sleep(2)
 
+#wraps a call to dbQ.  Stub functionality for now.
+def dataEntry(userDeck):
+    while(True):
+        dbQ(userDeck)
+        time.sleep(1)
 
 
 def f1():
@@ -40,27 +46,29 @@ def f1():
     logger.setLevel(multiprocessing.SUBDEBUG)
     manager = multiprocessing.Manager()
     userDeck = manager.Queue()
+    databaseQ = manager.Queue()
     userDeck.put('dduane')
     usersSeen = manager.dict()
     usersSeen['dduane'] = 1
     pool = multiprocessing.Pool(processes=degree)
-    for (i) in range(0,3):
-        pool.apply_async(userize1, [userDeck, i])# usersSeen])
+    pool.apply_async(dataEntry, [databaseQ])
+    for (i) in range(1,(degree-1)):
+        pool.apply_async(userize, [userDeck, usersSeen, databaseQ])
     pool.close()
     pool.join()
 
             
 def main():
     
-    #conn = sqlite3.connect('database/weekday.db')
-    #c = conn.cursor()
-    #c.execute('''create table users
-    #(username text, lastUpdated text, postCount integer)''')
-    #c.execute('''create table posts
-    #(poster text, source text, postID text, type text, date text, noteCount integer)''')
-    #c.execute('''create table notes
-    #(username text, rebloggedFrom text, postID text, type text)''')
-    #conn.close()
+    conn = sqlite3.connect('database/weekday.db')
+    c = conn.cursor()
+    c.execute('''create table if not exists users
+    (username text, lastUpdated text, postCount integer)''')
+    c.execute('''create table if not exists posts
+    (poster text, source text, postID text, type text, date text, noteCount integer)''')
+    c.execute('''create table if not exists notes
+    (username text, rebloggedFrom text, postID text, type text)''')
+    conn.close()
     f1()
 
 if __name__ == '__main__':
