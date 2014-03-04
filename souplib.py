@@ -138,9 +138,14 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                     break 
             if fChecker:
                 continue
-            
+            #woo erorr checking
+            if notepage.startswith("http://www.facebook.com/"):
+                continue
             preURL = notePage.geturl().split("/post/")
-            postNumber = preURL[1].split("/")[0].replace("#notes", "")
+            try:
+                postNumber = preURL[1].split("/")[0].replace("#notes", "")
+            except IndexError:
+                continue
             preURL = preURL[0]
             notes = BeautifulSoup(notePage)
             notePage.close()
@@ -191,7 +196,10 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                 for link in noteChunk.find_all('li'):
                     noteType = ""
                     #figure out name of person who's noting
-                    identity = link.a.get('href')
+                    try:
+                        identity = link.a.get('href')
+                    except AttributeError:
+                        continue
                     identity = identity.lstrip("http:").lstrip("/").partition('.')[0]
                     if (identity == "#"):
                         continue
