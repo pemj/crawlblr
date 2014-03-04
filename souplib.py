@@ -2,7 +2,7 @@ from urllib import request, error
 import socket
 from bs4 import BeautifulSoup
 from multiprocessing import Queue, Manager
-import Queue
+from Queue import Empty
 import re
 import datetime
 from time import sleep
