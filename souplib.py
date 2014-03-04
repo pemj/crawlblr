@@ -1,7 +1,7 @@
 from urllib import request, error
 import socket
 from bs4 import BeautifulSoup
-import multiprocessing
+from multiprocessing import Queue, Manager
 import re
 import datetime
 from time import sleep
@@ -13,7 +13,7 @@ import os
 def crawlUser(userDeck, usersSeen, dataQ, debug):
     try:
         username = userDeck.get()
-    except queue.Empty:
+    except Queue.Empty:
         return "nope"
     if hasattr(os, 'getppid'):  # only available on Unix
         pid = os.getppid()
@@ -139,7 +139,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
             if fChecker:
                 continue
             #woo erorr checking
-            if notepage.startswith("http://www.facebook.com/"):
+            if notePage.startswith("http://www.facebook.com/"):
                 continue
             preURL = notePage.geturl().split("/post/")
             try:
