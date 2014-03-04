@@ -140,7 +140,8 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
             if fChecker:
                 continue
             #woo erorr checking
-            if notePage.read().startswith("http://www.facebook.com/"):
+            check = post.get('href')
+            if check.find("http://www.facebook.com/") != -1:
                 continue
             preURL = notePage.geturl().split("/post/")
             try:
