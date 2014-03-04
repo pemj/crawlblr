@@ -2,6 +2,7 @@ from urllib import request, error
 import socket
 from bs4 import BeautifulSoup
 from multiprocessing import Queue, Manager
+import Queue
 import re
 import datetime
 from time import sleep
@@ -139,7 +140,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
             if fChecker:
                 continue
             #woo erorr checking
-            if notePage.startswith("http://www.facebook.com/"):
+            if notePage.read().startswith("http://www.facebook.com/"):
                 continue
             preURL = notePage.geturl().split("/post/")
             try:
