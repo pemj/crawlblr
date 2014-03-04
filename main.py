@@ -51,7 +51,7 @@ def f1():
     d = multiprocessing.Process(target=dataEntry, args=(databaseQ, 1))
     d.start()
     ls = []
-    for i in range(degree):
+    for i in range(degree-1):
         ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, True)))
         #ls.append(multiprocessing.Process(target=userize1, args=(userDeck, databaseQ, i)))
         ls[i].start()
