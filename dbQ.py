@@ -16,6 +16,7 @@ def dbQ(queue, db):
     f.write("dbQ start\n")
     
     while(True):
+        f.write("Queue length = " + str(queue.qsize()) + "\n")
         dbEntry = queue.get();
         if len(dbEntry) == 3:
             db.execute('INSERT INTO users ' +
