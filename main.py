@@ -10,7 +10,7 @@ import sqlite3
 from souplib import crawlUser
 from dbQ import dbQ
 import multiprocessing
-degree=4
+degree=12
 
 #multiprocess functionaliy checking        
 def userize1(userDeck, dataQ, num):
