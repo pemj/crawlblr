@@ -9,16 +9,22 @@ def dbQ(queue, debug):
     pid = os.getpid()
     #temporary while we figure out how to get the database sharing 
     #figured out
-    conn = sqlite3.connect('database/weekday.db')
+    conn = sqlite3.connect('database/weekday_' + str(pid) +'.db')
     db = conn.cursor()
+    db.execute('''create table if not exists users
+    (username text, lastUpdated text, postCount integer)''')
+    db.execute('''create table if not exists posts
+    (poster text, source text, postID text, type text, date text, noteCount integer)''')
+    db.execute('''create table if not exists notes
+    (username text, rebloggedFrom text, postID text, type text)''')
+    conn.commit()
     #logging
     f = open(('database/logfile_db_' + str(pid)), 'w')
     if debug:
         f.write("dbQ start\n")
     
     while(True):
-        if debug:
-            f.write("[DEBUG] Queue length = " + str(queue.qsize()) + "\n")
+        f.write("[DEBUG] Queue length = " + str(queue.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
         dbEntry = queue.get();
         if len(dbEntry) == 3:
             db.execute('INSERT INTO users ' +
@@ -42,7 +48,7 @@ def dbQ(queue, debug):
             f.write("[ERROR] Unrecognized entry type: " + str(dbEntry) + " at " + str(time.now())+ "\n") 
         #we commit to the database connection, not the cursor
         #so, at the minimum, we'll need to pass the connection
-        if(writesInBatch >= 20):
+        if(writesInBatch >= 100):
             conn.commit()
             if debug:
                 f.write("[DEBUG] Wrote " + str(writesInBatch) + " to the DB at " + str(time.now())+"\n") 
