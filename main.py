@@ -30,7 +30,7 @@ def userize(userDeck, usersSeen, dataQ, debug):
         if(userDeck):
             result = crawlUser(userDeck, usersSeen, dataQ, debug)
         else: 
-            time.sleep(2)
+            time.sleep(1)
 
 #wraps a call to dbQ.  Stub functionality for now.
 def dataEntry(dataDeck, debug):
@@ -54,11 +54,9 @@ def f1():
         ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, True)))
         #ls.append(multiprocessing.Process(target=userize1, args=(userDeck, databaseQ, i)))
         ls[i].start()
-        time.sleep(2)
     for j in range(degreeCrawl, (degreeDB+degreeCrawl)):
         ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, False)))
-        ls[j].start()
-        
+        ls[j].start()        
     for proc in ls:
         proc.join()
 
