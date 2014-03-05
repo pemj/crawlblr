@@ -6,18 +6,22 @@ import multiprocessing
 
 
 #finds more users, adds user, post, and note info
-def userize(userDeck, usersSeen, dataQ, debug):
-    while(1):        
+def userize(userDeck, usersSeen, dataQ, end, debug):
+    while(True):        
+        if end.value:
+            return
         if(userDeck):
-            result = crawlUser(userDeck, usersSeen, dataQ, debug)
+            result = crawlUser(userDeck, usersSeen, dataQ, end, debug)
         else: 
             time.sleep(1)
 
 #wraps a call to dbQ.  Stub functionality for now.
-def dataEntry(dataDeck, debug):
+def dataEntry(dataDeck, end, debug):
     while(True):
+        if end.value:
+            return
         if dbQ:
-            dbQ(dataDeck, debug)
+            dbQ(dataDeck, end, debug)
         else:
             time.sleep(5)
 
@@ -28,6 +32,8 @@ def f1():
     degreeCrawl=5
 
     manager = multiprocessing.Manager()
+    dbEnd = manager.Value('i', 0)
+    crawlEnd = manager.Value('i', 0)
     userDeck = manager.Queue()
     databaseQ = manager.Queue()
     userDeck.put('dduane')
@@ -35,13 +41,22 @@ def f1():
     usersSeen['dduane'] = 1
     ls = []
     for i in range(0, degreeCrawl):
-        ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, True)))
+        ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, crawlEnd, True)))
         ls[i].start()
     for j in range(degreeCrawl, (degreeDB+degreeCrawl)):
-        ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, False)))
-        ls[j].start()        
-    for proc in ls:
-        proc.join()
+        ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, dbEnd, False)))
+        ls[j].start() 
+    #end gracefully
+    exiting=input("enter to kill program")
+    print("Caught keyboard, sending shutdown signal to workers")
+    crawlEnd.value = 1
+    time.sleep(10)
+    dbEnd.value = 1
+    time.sleep(2)
+    #for proc in ls:
+    #    proc.join()
+    return
+
             
 def main():
     f1()
