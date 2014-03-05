@@ -177,6 +177,10 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
             noteCount = re.search(notePattern, apiBlob).groups(1)[0].rstrip(",")
             if postSource:
                 postSource = postSource.groups(1)[0].rstrip(".")
+                if(postSource in usersSeen):
+                    continue
+                userDeck.put(postSource)
+                continue
             else:
                 postSource = username
             postType = re.search(typePattern, apiBlob)
@@ -228,7 +232,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                     if not rebloggedFrom:
                         rebloggedFrom = ""
                     else:
-                        rebloggedFrom = rebloggedFrom[0].get('href').replace("http://", "").replace(".tumblr.com", "")                       
+                        rebloggedFrom = rebloggedFrom[0].get('href').replace("http://", "").replace(".tumblr.com/", "")                       
                     dataQ.put((identity, rebloggedFrom, postNumber, noteType))
 
                 nextNotes = notes("li", class_="note more_notes_link_container")
