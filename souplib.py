@@ -223,7 +223,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                     try:
                         if "reblogged" in link.span.text:
                             noteType = "reblog"
-                    except AtrributeError:
+                    except AttributeError:
                         continue
                     if "likes" in link.span.text:
                         noteType = "like"
