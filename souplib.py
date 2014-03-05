@@ -268,7 +268,7 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                 notes = BeautifulSoup(localbject)
                 localbject.close()
                 nextNotes = []
-            cargs = (username, postSource, postNumber, postType, postDate, noteCount)
+            cargs = (username, postNumber, postType, postDate, noteCount)
 
             if debug:
                 f.write("post written: "+str(cargs))
