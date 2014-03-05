@@ -216,8 +216,11 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                     else:
                         isFollowee = True
                     #figure out what type of note we're dealing with
-                    if "reblogged" in link.span.text:
-                        noteType = "reblog"
+                    try:
+                        if "reblogged" in link.span.text:
+                            noteType = "reblog"
+                    except AtrributeError:
+                        continue
                     if "likes" in link.span.text:
                         noteType = "like"
                     #figure out who they reblogged it from.  If it's a like, emptystring.
