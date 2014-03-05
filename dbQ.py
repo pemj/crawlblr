@@ -4,7 +4,7 @@ import os
 import sqlite3
 import multiprocessing
 #import config
-def dbQ(queue, debug):
+def dbQ(queue, end, debug):
     writesInBatch = 0;
     pid = os.getpid()
     #temporary while we figure out how to get the database sharing 
@@ -24,6 +24,12 @@ def dbQ(queue, debug):
         f.write("dbQ start\n")
     
     while(True):
+        if end.value:
+            conn.commit()
+            db.close()
+            f.write("closing down database process " + str(pid))
+            f.close()
+            return
         f.write("[DEBUG] Queue length = " + str(queue.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
         dbEntry = queue.get();
         if len(dbEntry) == 3:

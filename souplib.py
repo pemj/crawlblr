@@ -11,7 +11,7 @@ import os
 
 
 
-def crawlUser(userDeck, usersSeen, dataQ, debug):
+def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
 
         username = userDeck.get()
@@ -238,6 +238,10 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
                     else:
                         rebloggedFrom = rebloggedFrom[0].get('href').replace("http://", "").replace(".tumblr.com/", "")                       
                     dataQ.put((identity, rebloggedFrom, postNumber, noteType))
+                    if end.value:
+                        dataQ.put((username, updated, postCount))
+                        f.write("received exit, shutting down process " + str(pid))
+                        return "yeah"
 
                 nextNotes = notes("li", class_="note more_notes_link_container")
                 if (not nextNotes):
