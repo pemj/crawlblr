@@ -24,8 +24,8 @@ def dataEntry(dataDeck, debug):
 
 def f1():
     #degree of multiprocessing
-    degreeDB = 4
-    degreeCrawl=55
+    degreeDB = 1
+    degreeCrawl=5
 
     manager = multiprocessing.Manager()
     userDeck = manager.Queue()

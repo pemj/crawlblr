@@ -14,7 +14,7 @@ def dbQ(queue, debug):
     db.execute('''create table if not exists users
     (username text, lastUpdated text, postCount integer)''')
     db.execute('''create table if not exists posts
-    (poster text, source text, postID text, type text, date text, noteCount integer)''')
+    (username text, postID text, type text, date text, noteCount integer)''')
     db.execute('''create table if not exists notes
     (username text, rebloggedFrom text, postID text, type text)''')
     conn.commit()
@@ -38,9 +38,9 @@ def dbQ(queue, debug):
             if debug:
                 f.write("[DEBUG] Note inserted: " + str(dbEntry) + " at " + str(time.now())+"\n") 
             writesInBatch += 1
-        elif len(dbEntry) == 6:
+        elif len(dbEntry) == 5:
             db.execute('INSERT INTO posts ' +
-                       'VALUES (?,?,?,?,?,?);', dbEntry)
+                       'VALUES (?,?,?,?,?);', dbEntry)
             if debug:
                 f.write("[DEBUG] Post inserted: " + str(dbEntry) + " at " + str(time.now())+"\n") 
             writesInBatch += 1
