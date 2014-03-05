@@ -11,8 +11,7 @@ from souplib import crawlUser
 from dbQ import dbQ
 import multiprocessing
 degreeDB = 4
-degreeCrawl=degreeDB
-degreeCrawl+= 12
+degreeCrawl=55
 
 #multiprocess functionaliy checking        
 def userize1(userDeck, dataQ, num):
@@ -38,7 +37,7 @@ def dataEntry(dataDeck, debug):
     time.sleep(5)
     while(True):
         if dbQ:
-            dbQ(dataDeck, 1)
+            dbQ(dataDeck, debug)
         else:
             time.sleep(5)
 
@@ -51,14 +50,15 @@ def f1():
     usersSeen = manager.dict()
     usersSeen['dduane'] = 1
     ls = []
-    for j in range(0, degreeDB):
-        ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, 1)))
-        ls[j].start()
-    for i in range(degreeDB, degreeCrawl):
+    for i in range(0, degreeCrawl):
         ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, True)))
         #ls.append(multiprocessing.Process(target=userize1, args=(userDeck, databaseQ, i)))
         ls[i].start()
         time.sleep(2)
+    for j in range(degreeCrawl, (degreeDB+degreeCrawl)):
+        ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, False)))
+        ls[j].start()
+        
     for proc in ls:
         proc.join()
 
