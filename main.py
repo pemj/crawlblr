@@ -10,7 +10,9 @@ import sqlite3
 from souplib import crawlUser
 from dbQ import dbQ
 import multiprocessing
-degree=12
+degreeDB = 4
+degreeCrawl=degreeDB
+degreeCrawl+= 12
 
 #multiprocess functionaliy checking        
 def userize1(userDeck, dataQ, num):
@@ -49,15 +51,16 @@ def f1():
     usersSeen = manager.dict()
     usersSeen['dduane'] = 1
     ls = []
-    ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, 1)))
-    ls[0].start()
-    for i in range(1, degree):
+    for j in range(0, degreeDB):
+        ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, 1)))
+        ls[j].start()
+    for i in range(degreeDB, degreeCrawl):
         ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, True)))
         #ls.append(multiprocessing.Process(target=userize1, args=(userDeck, databaseQ, i)))
         ls[i].start()
         time.sleep(2)
-    for i in ls:
-        i.join()
+    for proc in ls:
+        proc.join()
 
             
 def main():
