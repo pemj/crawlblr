@@ -13,6 +13,7 @@ import os
 
 def crawlUser(userDeck, usersSeen, dataQ, debug):
     try:
+
         username = userDeck.get()
     except Queue.Empty:
         return "nope"
@@ -172,9 +173,12 @@ def crawlUser(userDeck, usersSeen, dataQ, debug):
 
             apiBlob = BeautifulSoup(uribject).prettify()
             uribject.close()
-            postDate = re.search(datePattern, apiBlob).groups(1)[0]
-            postSource = re.search(sourcePattern, apiBlob)
-            noteCount = re.search(notePattern, apiBlob).groups(1)[0].rstrip(",")
+            try:
+                postDate = re.search(datePattern, apiBlob).groups(1)[0]
+                postSource = re.search(sourcePattern, apiBlob)
+                noteCount = re.search(notePattern, apiBlob).groups(1)[0].rstrip(",")
+            except AttributeError:
+                continue
             if postSource:
                 postSource = postSource.groups(1)[0].rstrip(".")
                 if(postSource in usersSeen):
