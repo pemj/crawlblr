@@ -13,17 +13,16 @@ import os
 
 def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
-
-        username = userDeck.get()
-    except Queue.Empty:
-        return "nope"
+        username = userDeck.get(True, 5)
+    except Empty:
+        return "nope\n"           
     if hasattr(os, 'getppid'):  # only available on Unix
         pid = os.getppid()
         print('parent process:', pid)
     pid = os.getpid()
     print('process id:', pid)
     f = open(('database/logfile_'+str(pid)), 'w')
-    f.write("well we're here eh\n")
+    f.write("begin crawler"+ str(pid)+"\n")
     
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
     blogString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/info?api_key="+apikey
@@ -38,7 +37,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     
     #Open first user page
     fChecker = True
-    for i in range(10):
+    for i in range(5):
         try:
             blogject = request.urlopen(blogString)
         except error.HTTPError:
@@ -86,7 +85,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
 
         #try to open the post page
         fChecker = True
-        for i in range(10):
+        for i in range(5):
             try:
                 unSouped = request.urlopen(blogURL+(str(pageNum)))
             except error.HTTPError:
@@ -125,11 +124,11 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
                 f.write("opening post"+ post.get('href')+"\n")
             #open the notes page for that post
             fChecker = True
-            for i in range(10):
+            for i in range(5):
                 try:
                     notePage = request.urlopen(post.get('href'))
                 except error.HTTPError:
-                    f.write("404: notePage"+post.get('href')+"\n")
+                    f.write("404: notePage "+post.get('href')+"\n")
                     continue
                 except error.URLError:
                     f.write("name error, unSoupede:")
@@ -156,7 +155,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
 
             #open an api page to get some post metadata
             fChecker = True
-            for i in range(10):
+            for i in range(5):
                 try:
                     uribject = request.urlopen(uristring)
                 except error.HTTPError:
@@ -240,7 +239,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
                     dataQ.put((identity, rebloggedFrom, postNumber, noteType))
                     if end.value:
                         dataQ.put((username, updated, postCount))
-                        f.write("received exit, shutting down process " + str(pid))
+                        f.write("received exit, shutting down process " + str(pid)+"\n")
                         return "yeah"
 
                 nextNotes = notes("li", class_="note more_notes_link_container")
@@ -255,7 +254,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
                     f.write("localText: "+localText+"\n")
 
                 fChecker = True
-                for i in range(10):
+                for i in range(5):
                     try:
                         localbject = request.urlopen(localText)
                     except error.HTTPError:

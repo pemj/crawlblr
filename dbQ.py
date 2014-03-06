@@ -2,9 +2,10 @@
 from datetime import datetime as time
 import os
 import sqlite3
-import multiprocessing
-#import config
-def dbQ(queue, end, debug):
+from multiprocessing import Queue, Manager
+from queue import Empty
+
+def dbQ(crawlQ, end, debug):
     writesInBatch = 0;
     pid = os.getpid()
     #temporary while we figure out how to get the database sharing 
@@ -25,13 +26,16 @@ def dbQ(queue, end, debug):
     
     while(True):
         if end.value:
+            f.write("closing down database process " + str(pid)+"\n")
             conn.commit()
             db.close()
-            f.write("closing down database process " + str(pid))
             f.close()
             return
-        f.write("[DEBUG] Queue length = " + str(queue.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
-        dbEntry = queue.get();
+        f.write("[DEBUG] Queue length = " + str(crawlQ.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
+        try:
+            dbEntry = crawlQ.get(True, 5);
+        except Empty:
+            continue
         if len(dbEntry) == 3:
             db.execute('INSERT INTO users ' +
                        'VALUES (?,?,?);', dbEntry)
@@ -54,7 +58,7 @@ def dbQ(queue, end, debug):
             f.write("[ERROR] Unrecognized entry type: " + str(dbEntry) + " at " + str(time.now())+ "\n") 
         #we commit to the database connection, not the cursor
         #so, at the minimum, we'll need to pass the connection
-        if(writesInBatch >= 100):
+        if(writesInBatch >= 200):
             conn.commit()
             if debug:
                 f.write("[DEBUG] Wrote " + str(writesInBatch) + " to the DB at " + str(time.now())+"\n") 
