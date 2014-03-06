@@ -24,7 +24,7 @@ else:
             pid = f.readline()
             f.close()
             os.unlink('crawl.lock')
-            os.system('kill ' + pid)
+            subprocess.call(['kill', pid])
         else:
             print("There doesn't appear to be a crawler running\nIf you suspect this is not the case, god help you")
 

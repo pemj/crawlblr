@@ -18,6 +18,7 @@ def signal_term_handler(signal, frame):
     time.sleep(10)
     dbEnd.value = 1
     time.sleep(2)
+    sys.exit(0)
          
 
 #finds more users, adds user, post, and note info
