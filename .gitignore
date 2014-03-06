@@ -11,3 +11,4 @@ multiprocessing
 __pycache__/*
 re
 venv.bash
+crawl.lock

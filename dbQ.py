@@ -27,10 +27,11 @@ def dbQ(queue, end, debug):
         if end.value:
             conn.commit()
             db.close()
-            f.write("closing down database process " + str(pid))
+            f.write("closing down database process " + str(pid) + "\n")
             f.close()
             return
-        f.write("[DEBUG] Queue length = " + str(queue.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
+        if debug:
+            f.write("[DEBUG] Queue length = " + str(queue.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
         dbEntry = queue.get();
         if len(dbEntry) == 3:
             db.execute('INSERT INTO users ' +
