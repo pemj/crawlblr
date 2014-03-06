@@ -3,6 +3,7 @@
 *.swp
 nohup.out
 time/*
+time
 sqlite3/*
 time/*
 logfile_*
@@ -12,3 +13,4 @@ __pycache__/*
 re
 venv.bash
 crawl.lock
+*.db-journal
