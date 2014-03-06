@@ -34,7 +34,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     postPattern = re.compile('.*\"posts\"\:(.*?,)')
     updatedPattern = re.compile('.*\"updated\"\:(.*?,)')
     notePattern = re.compile('.*\"note_count\"\:(.*?,)')
-    prevPosts = set()
+    prevPost = set()
     
     #Open first user page
     fChecker = True

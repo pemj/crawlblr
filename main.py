@@ -50,8 +50,8 @@ def dataEntry(dataDeck, end, debug):
 
 def f1():
     #degree of multiprocessing
-    degreeDB = 2
-    degreeCrawl=10
+    degreeDB = 1
+    degreeCrawl=5
 
     global manager
     userDeck = manager.Queue()
