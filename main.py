@@ -63,7 +63,8 @@ def f1():
     signal.signal(signal.SIGTERM, signal_term_handler)
     for proc in ls:
         proc.join()
-            
+    return
+
 def main():
     f1()
 
