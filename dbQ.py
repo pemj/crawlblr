@@ -33,7 +33,7 @@ def dbQ(crawlQ, end, debug):
             return
         f.write("[DEBUG] Queue length = " + str(crawlQ.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
         try:
-            dbEntry = crawlQ.get(True, 5);
+            dbEntry = crawlQ.get(True, 1);
         except Empty:
             continue
         if len(dbEntry) == 3:

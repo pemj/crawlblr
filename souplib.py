@@ -34,6 +34,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     postPattern = re.compile('.*\"posts\"\:(.*?,)')
     updatedPattern = re.compile('.*\"updated\"\:(.*?,)')
     notePattern = re.compile('.*\"note_count\"\:(.*?,)')
+    prevPost = set()
     
     #Open first user page
     fChecker = True
@@ -182,10 +183,15 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
                 postSource = postSource.groups(1)[0].rstrip(".")
                 if(postSource in usersSeen):
                     continue
+                usersSeen[postSource] = 1
                 userDeck.put(postSource)
                 continue
             else:
                 postSource = username
+
+            if postNumber in prevPost:
+                continue
+            prevPost.add(postNumber)
             postType = re.search(typePattern, apiBlob)
             postType = postType.groups(1)[0].rstrip('\"')
             #for each fifty-note page
@@ -213,8 +219,8 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
                     if (identity == "#"):
                         continue
                     if (identity not in usersSeen):
-                        userDeck.put(identity)
                         usersSeen[identity] = 1
+                        userDeck.put(identity)
                     usersSeen[identity] += 1
 
                     #figure out if this was posted by a follower

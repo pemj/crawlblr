@@ -22,29 +22,36 @@ def signal_term_handler(signal, frame):
 
 #finds more users, adds user, post, and note info
 def userize(userDeck, usersSeen, dataQ, end, debug):
-    while(True):        
+    done = 0
+    while(done < 360):        
         if end.value:
             return
         if(userDeck):
+            done = 0
             result = crawlUser(userDeck, usersSeen, dataQ, end, debug)
         else: 
+            done += 1
             time.sleep(1)
+    return
 
 #wraps a call to dbQ.  Stub functionality for now.
 def dataEntry(dataDeck, end, debug):
-    while(True):
+    done = 0
+    while(done < 360):
         if end.value:
             return
         if dbQ:
+            done = 0
             dbQ(dataDeck, end, debug)
         else:
+            done += 5
             time.sleep(5)
-
+    return
 
 def f1():
     #degree of multiprocessing
-    degreeDB = 2
-    degreeCrawl=10
+    degreeDB = 1
+    degreeCrawl=5
 
     global manager
     userDeck = manager.Queue()
