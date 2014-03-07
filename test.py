@@ -2,6 +2,10 @@
 import subprocess
 import re
 import sqlite3
+
+#remove the final if we have it
+os.unlink('final.db')
+
 #fill the list of database filenames, dbFiles
 output, error= subprocess.Popen(["ls"], stdout=subprocess.PIPE).communicate()
 filePattern = re.compile('^[a-z0-9A-Z_]+(\.db)+$')
@@ -19,11 +23,10 @@ c.execute('''create table if not exists notes
 (username text, rebloggedFrom text, postID text, type text)''')
 conn.commit()
 
-
 #for each database:
-for name in dbFiles:
+for base in dbFiles:
     #attach to that database
-    c.execute('''attach ? as toMerge''', name)
+    c.execute('''attach ? as toMerge''', (base,))
     #add all of its rows to the final database
     c.execute('''insert into users select * from toMerge.users''')
     c.execute('''insert into posts select * from toMerge.posts''')
