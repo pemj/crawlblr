@@ -1,4 +1,5 @@
 # /usr/bin/python3
+import datetime
 import time
 from souplib import crawlUser
 from dbQ import dbQ
@@ -20,20 +21,25 @@ def signal_term_handler(signal, frame):
     time.sleep(2)
          
 
-def degreeMonitor(degreeCrawl, degreeVal, dataQ):
+def degreeMonitor(dataQ):
     f = open('database/queueLen', 'w')
+    f.write("start monitor\n")
+    global crawlDeg
     secLast = 0
     last = 0
     curr = 0
     flag = False
+    time.sleep(30)
     while(True):
         #push back by one
         secLast, last, curr = last, curr, dataQ.qsize()
         time.sleep(5)
-        f.write("[DEBUG] Queue length = " + str(curr) + ", at time = "+str(time.now())+"\n")
+        f.write("[DEBUG] Queue length = " + str(curr) + ", at time = "+str(datetime.datetime.today())+"\n")
         if(((curr - last) > 1000) and ((last - secLast) > 1000)):
+            if crawlDeg.value == 0:
+                return                
             if flag:
-                degreeCrawl.value = degreeCrawl.value - 1
+                crawlDeg.value = crawlDeg.value - 1
                 flag = False
             else:
                 flag = True
@@ -43,7 +49,7 @@ def degreeMonitor(degreeCrawl, degreeVal, dataQ):
 def userize(userDeck, usersSeen, dataQ, num, end, debug):
     done = 0
     while(done < 360):        
-        if end.value:
+        if end.value < num:
             return
         if(userDeck):
             done = 0
@@ -82,6 +88,8 @@ def f1():
     crawlDeg.value = degreeCrawl - 1
 
     ls = []
+    x = multiprocessing.Process(target=degreeMonitor, args=(databaseQ,))
+    x.start()
     for i in range(0, degreeCrawl):
         ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, i, crawlDeg, True)))
         ls[i].start()
@@ -92,6 +100,7 @@ def f1():
     signal.signal(signal.SIGTERM, signal_term_handler)
     for proc in ls:
         proc.join()
+    x.join()
     return
 
 def main():

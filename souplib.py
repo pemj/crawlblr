@@ -77,25 +77,21 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
     pageNum = 0
 
     #while our page has posts on it
-    if debug:
-        f.write(str(datetime.datetime.today()))
     while(hasNotes):
         if(debug):
-            f.write("entering page " + blogURL+(str(pageNum))+"\n")
-            f.write(str(datetime.datetime.today()))
-
+            f.write("[DEBUG] page:" + blogURL+(str(pageNum))+"\n")
         #try to open the post page
         fChecker = True
         for i in range(5):
             try:
                 unSouped = request.urlopen(blogURL+(str(pageNum)))
             except error.HTTPError:
-                f.write("404: unSouped"+blogURL+str(pageNum)+"\n")
+                f.write("[ERROR] 404: unSouped"+blogURL+str(pageNum)+"\n")
                 continue
             except error.URLError:
-                f.write("name error, unSouped:")
+                f.write("[ERROR] name error: unSouped\n")
             except socket.error:
-                f.write("socket error, :")
+                f.write("[ERROR] socket error: unSouped\n")
             else:
                 fChecker = False
                 break 
@@ -111,30 +107,23 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
         page = BeautifulSoup(unSouped)        
         unSouped.close()
         hasNotes = False
-        #for each post in a page
-        if debug:
-            f.write("begin post for-loop\n")
-        for post in page.find_all(href=re.compile(noteString)):
-            if debug:
-                f.write("datetime, post:")
-                f.write(str(datetime.datetime.today()))
-            #something here is totally amiss?
+        #for each post in a page     
+        for post in page.find_all(href=re.compile(noteString)):              
             hasNotes = True
-
             if debug:
-                f.write("opening post"+ post.get('href')+"\n")
+                f.write("[DEBUG] opening post: "+ post.get('href')+"\n")
             #open the notes page for that post
             fChecker = True
             for i in range(5):
                 try:
                     notePage = request.urlopen(post.get('href'))
                 except error.HTTPError:
-                    f.write("404: notePage "+post.get('href')+"\n")
+                    f.write("[ERROR] 404: notePage "+post.get('href')+"\n")
                     continue
                 except error.URLError:
-                    f.write("name error, unSoupede:")
+                    f.write("[ERROR] name error: notePage\n")
                 except socket.error:
-                    f.write("socket error, :")
+                    f.write("[ERROR] socket error: notePage\n")
                 else:
                     fChecker = False
                     break 
@@ -160,11 +149,11 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
                 try:
                     uribject = request.urlopen(uristring)
                 except error.HTTPError:
-                    f.write("404, uribject: "+uristring+"\n")
+                    f.write("[ERROR] 404, uribject: "+uristring+"\n")
                 except error.URLError:
-                    f.write("name error, unSouped:")
+                    f.write("[ERROR] name error: uribject")
                 except socket.error:
-                    f.write("socket error, :")
+                    f.write("[ERROR] socket error: uribject")
                 else:
                     fChecker = False
                     break 
@@ -197,13 +186,11 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
             #for each fifty-note page
             while (1):
                 if debug:
-                    f.write("datetime, notepage:")
-                    f.write(str(datetime.datetime.today())+"\n")
-
+                    f.write("[DEBUG]: notepage\n")
                 noteChunk = notes("ol", class_="notes")
                 if not noteChunk:
                     if debug:
-                        f.write("breaking via noteChunk\n")
+                        f.write("[DEBUG] breaking via noteChunk\n")
                     break
                 noteChunk = noteChunk[0]
                 #for each note on that page
@@ -245,7 +232,7 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
                     dataQ.put((identity, rebloggedFrom, postNumber, noteType))
                     if end.value < num:
                         dataQ.put((username, updated, postCount))
-                        f.write("received exit, shutting down process " + str(pid)+"\n")
+                        f.write("[EXIT] received exit, shutting down process " + str(pid)+"\n")
                         return "yeah"
 
                 nextNotes = notes("li", class_="note more_notes_link_container")
@@ -255,20 +242,16 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
                 localText = re.search(nextPattern, localText)
                 localText = localText.groups(1)[0].split("/")[3].rstrip("\',true)")
                 localText = preURL+"/notes/"+postNumber+"/"+localText
-
-                if debug:
-                    f.write("localText: "+localText+"\n")
-
                 fChecker = True
                 for i in range(5):
                     try:
                         localbject = request.urlopen(localText)
                     except error.HTTPError:
-                        f.write("404, localText: "+localText+"\n")
+                        f.write("[ERROR] 404: localText: "+localText+"\n")
                     except error.URLError:
-                        f.write("name error, unSoupede:")
+                        f.write("[ERROR] name error: localbject")
                     except socket.error:
-                        f.write("socket error, :")
+                        f.write("[ERROR] socket error: localbject")
                     else:
                         fChecker = False
                         break 
@@ -278,13 +261,12 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
                 localbject.close()
                 nextNotes = []
             cargs = (username, postNumber, postType, postDate, noteCount)
-
             if debug:
-                f.write("post written: "+str(cargs))
-
+                f.write("[DEBUG] post written: "+str(cargs) + "\n")
             dataQ.put(cargs)
-  
-            
+           
+    if debug:
+        f.write("[DEBUG] user written: " + username + "\n")
     dataQ.put((username, updated, postCount))        
     return "yeah"
 

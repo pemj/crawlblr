@@ -1,6 +1,5 @@
 Current status:
-seems to work.  We only have it running with one database worker, but the crawlers seem like they're trucking along.  We'll see how it actually runs on ACISS soon.  Had one error, but it was a stupid thing I hit by deleting a folder on accident, we look fine now.
-
+Probably working.  820 to 110 with 2500 still builds up a massive queue.  Hundreds of millions of lost entries.
 
 division of labor:
 
@@ -12,6 +11,11 @@ usersSeen - this dictionary holds the list of all users that have ever been adde
 
 dataQ - this queue holds tuples of size 3, 4, or 6.  Depending on the tuple length, those tuples may represent data about users, notes, or posts.  Tuples are added to the queue by userCrawl, and removed from the queue by dbQ, which subsequently adds them to the database.
 
-Data structures we need to implement:
 
-We need to add something that is shared between instances of dbQ, so that we can add and remove instances of that process as needed.
+souplib.py holds the crawler.  It's horrible and needs to be rebased, but that's neither here nor there.  It crawls over a name, adding more names to userDeck (and usersSeen) if they aren't already in usersSeen.  It foists off reposts onto the crawler instance that handles the original poster.
+
+dbQ.py handles database queries.  It pulls items off of dataQ, and inserts them into the database.  Each instance of dbQ running happens to have its own database.
+
+joiner.py  - and on the subject of databases: this will merge all of the databases into one complete database.
+
+start.pbs - run the whole thing via "qsub start.pbs", this script handles job management details over ACISS.

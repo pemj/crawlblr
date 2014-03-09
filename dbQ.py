@@ -6,6 +6,9 @@ from multiprocessing import Queue, Manager
 from queue import Empty
 
 def dbQ(crawlQ, end, debug):
+    #determines how many entries we write before committing.
+    writeThresh = 200
+
     writesInBatch = 0;
     pid = os.getpid()
     #temporary while we figure out how to get the database sharing 
@@ -31,7 +34,6 @@ def dbQ(crawlQ, end, debug):
             db.close()
             f.close()
             return
-        f.write("[DEBUG] Queue length = " + str(crawlQ.qsize()) + " for pid = " + str(pid) +" at time = " + str(time.now()) + "\n")
         try:
             dbEntry = crawlQ.get(True, 1);
         except Empty:
@@ -58,7 +60,7 @@ def dbQ(crawlQ, end, debug):
             f.write("[ERROR] Unrecognized entry type: " + str(dbEntry) + " at " + str(time.now())+ "\n") 
         #we commit to the database connection, not the cursor
         #so, at the minimum, we'll need to pass the connection
-        if(writesInBatch >= 200):
+        if(writesInBatch >= writeThresh):
             conn.commit()
             if debug:
                 f.write("[DEBUG] Wrote " + str(writesInBatch) + " to the DB at " + str(time.now())+"\n") 
