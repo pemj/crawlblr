@@ -54,7 +54,7 @@ def userize(userDeck, usersSeen, dataQ, num, end, debug):
     return
 
 #wraps a call to dbQ.  Stub functionality for now.
-def dataEntry(dataDeck, num, end, debug):
+def dataEntry(dataDeck, end, debug):
     done = 0
     while(done < 360):
         if end.value:
@@ -71,18 +71,19 @@ def f1():
     #degree of multiprocessing
     degreeDB = 1
     degreeCrawl=5
-
+    
     global manager
+    global crawlDeg
     userDeck = manager.Queue()
     databaseQ = manager.Queue()
     userDeck.put('dduane')
     usersSeen = manager.dict()
     usersSeen['dduane'] = 1
-    crawlEnd.value = degreeCrawl - 1
+    crawlDeg.value = degreeCrawl - 1
 
     ls = []
     for i in range(0, degreeCrawl):
-        ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, i, crawlEnd, True)))
+        ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, i, crawlDeg, True)))
         ls[i].start()
     for j in range(degreeCrawl, (degreeDB+degreeCrawl)):
         ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, dbEnd, True)))
