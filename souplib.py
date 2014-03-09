@@ -29,7 +29,7 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
     #compile some regular expressions for rapid searches later
     nextPattern = re.compile('.*tumblrReq\.open(\(.*?\))')
     datePattern = re.compile('.*\"date\"\:\"(.*?\")')
-    sourcePattern = re.compile('.*source_url\"\:\"http\:\\\\/\\\\/(.*?\.)')
+    sourcePattern = re.compile('.*source_url\"\:\"http\:\\\\/\\\\/(.*?\.tumblr\.com)')
     typePattern = re.compile('.*type\"\:\"(.*?\")')
     postPattern = re.compile('.*\"posts\"\:(.*?,)')
     updatedPattern = re.compile('.*\"updated\"\:(.*?,)')
