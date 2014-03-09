@@ -5,7 +5,7 @@ import sqlite3
 from multiprocessing import Queue, Manager
 from queue import Empty
 
-def dbQ(crawlQ, end, debug):
+def dbQ(crawlQ, num, end, debug):
     writesInBatch = 0;
     pid = os.getpid()
     #temporary while we figure out how to get the database sharing 
@@ -25,7 +25,7 @@ def dbQ(crawlQ, end, debug):
         f.write("dbQ start\n")
     
     while(True):
-        if end.value:
+        if end.value < num:
             f.write("closing down database process " + str(pid)+"\n")
             conn.commit()
             db.close()
