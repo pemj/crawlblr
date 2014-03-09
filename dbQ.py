@@ -7,7 +7,7 @@ from queue import Empty
 
 def dbQ(crawlQ, end, debug):
     #determines how many entries we write before committing.
-    writeThresh = 200
+    writeThresh = 2500
 
     writesInBatch = 0;
     pid = os.getpid()
