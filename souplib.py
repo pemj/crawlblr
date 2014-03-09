@@ -21,7 +21,7 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
         print('parent process:', pid)
     pid = os.getpid()
     print('process id:', pid)
-    f = open(('database/logfile_'+str(pid)), 'w')
+    f = open(('database/crawlers/logfile_'+str(pid)), 'w')
     f.write("begin crawler"+ str(pid)+"\n")
     
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"

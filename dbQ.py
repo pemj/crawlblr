@@ -20,12 +20,12 @@ def dbQ(crawlQ, end, debug):
     (username text, rebloggedFrom text, postID text, type text)''')
     conn.commit()
     #logging
-    f = open(('database/logfile_db_' + str(pid)), 'w')
+    f = open(('database/workers/logfile_db_' + str(pid)), 'w')
     if debug:
         f.write("dbQ start\n")
     
     while(True):
-        if end.value < num:
+        if end.value:
             f.write("closing down database process " + str(pid)+"\n")
             conn.commit()
             db.close()
