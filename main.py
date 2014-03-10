@@ -25,11 +25,14 @@ def degreeMonitor(dataQ):
     f = open('database/queueLen', 'w')
     f.write("start monitor\n")
     global crawlDeg
+
+    delayStart = 30
+    interStitial = 5
     secLast = 0
     last = 0
     curr = 0
     flag = False
-    time.sleep(180)
+    time.sleep(delayStart)
     while(True):
         #push back by one
         secLast, last, curr = last, curr, dataQ.qsize()
@@ -42,7 +45,7 @@ def degreeMonitor(dataQ):
                 flag = False
             else:
                 flag = True
-        time.sleep(30)
+        time.sleep(interStitial)
 
 #finds more users, adds user, post, and note info
 def userize(userDeck, usersSeen, dataQ, num, end, debug):
@@ -74,8 +77,8 @@ def dataEntry(dataDeck, end, debug):
 
 def f1():
     #degree of multiprocessing
-    degreeDB = 100
-    degreeCrawl = 800
+    degreeDB = 1
+    degreeCrawl = 8
     
     global manager
     global crawlDeg
