@@ -17,7 +17,7 @@ def signal_term_handler(signal, frame):
     global dbEnd
     crawlEnd.value = 1
     time.sleep(10)
-    dbEnd.value = 1x
+    dbEnd.value = 1
     time.sleep(2)
          
 
@@ -61,7 +61,7 @@ def degreeMonitor(dataQ, debug):
 def userize(userDeck, usersSeen, dataQ, end, debug):
     done = 0
     while(done < 360):        
-        if end.value < num:
+        if end.value:
             return
         if(userDeck):
             done = 0
