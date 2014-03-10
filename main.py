@@ -43,6 +43,7 @@ def degreeMonitor(dataQ, debug):
         f.flush()
         if(((((curr - last) - (last - secLast)) > 5000) or ((curr - last) > 10000)) and (secLast > 50000)): 
             if dbEnd:
+                f.write("[DEBUG] end of database situation, killing database spawner")
                 return
             if flag:
                 for x in range(localDeg, localDeg + 5):
