@@ -9,41 +9,47 @@ import signal
 
 manager = multiprocessing.Manager()
 dbEnd = manager.Value('i', 0)
-crawlDeg = manager.Value('i', 0)
+crawlEnd = manager.Value('i', 0)
 
 def signal_term_handler(signal, frame):
     print("Terminating child processes")
     global crawlEnd
-    global degreeDB
+    global dbEnd
     crawlEnd.value = 1
     time.sleep(10)
     dbEnd.value = 1x
     time.sleep(2)
          
 
-def degreeMonitor(dataQ):
+def degreeMonitor(dataQ, debug):
     f = open('database/queueLen', 'w')
     f.write("start monitor\n")
-    global degreeDB
+    global dbEnd
+    localDeg = 0
 
     delayStart = 180
-    interStitial = 25
+    interStitial = 30
     secLast = 0
     last = 0
     curr = 0
     flag = False
     time.sleep(delayStart)
+    localWorkers = []
     while(True):
         #push back by one
         secLast, last, curr = last, curr, dataQ.qsize()
-        f.write("[DEBUG] Queue length = " + str(curr) + ", at time = "+str(datetime.datetime.today())+"\n")
+        f.write("[DEBUG] Queue length = " + str(curr) + ", changed by " + 
+                str(curr - last) + ", at time = "+str(datetime.datetime.today())+"\n")
         f.flush()
-        if(((((curr - last) - (last - secLast)) > 5000) or ((curr - last) > 10000)) and (secLast > 50000)):
-            if degreeDB.value == 0:
-                return                
+        if(((((curr - last) - (last - secLast)) > 5000) or ((curr - last) > 10000)) and (secLast > 50000)): 
+            if dbEnd:
+                return
             if flag:
-                degreeDB.value = degreeDB.value + 3
-                f.write("[DEBUG] added work, now at "+str(degreeDB.value)+"\n")
+                for x in range(localDeg, localDeg + 5):
+                    localWorkers.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, dbEnd, debug)))
+                    localWorkers[x].start()                    
+                localDeg += 5
+                f.write("[DEBUG] added workers, now at "+str(localDeg.value)+"\n")
                 flag = False
             else:
                 flag = True
@@ -81,11 +87,12 @@ def dataEntry(dataDeck, num, end, debug):
 
 def f1():
     #degree of multiprocessing
-    degDB = 200
-    degreeCrawl = 600
+    degDB = 150
+    degreeCrawl = 500
     
     global manager
     global crawlEnd
+    global dbEnd
     userDeck = manager.Queue()
     databaseQ = manager.Queue()
     userDeck.put('dduane')
@@ -94,8 +101,6 @@ def f1():
     
 
     ls = []
-    x = multiprocessing.Process(target=degreeMonitor, args=(databaseQ,))
-    x.start()
     for i in range(0, degreeCrawl):
         ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, crawlEnd, False)))
         ls[i].start()
@@ -104,6 +109,8 @@ def f1():
         ls[j].start() 
     #end gracefully
     signal.signal(signal.SIGTERM, signal_term_handler)
+    x = multiprocessing.Process(target=degreeMonitor, args=(databaseQ, False))
+    x.start()    
     for proc in ls:
         proc.join()
     x.join()
