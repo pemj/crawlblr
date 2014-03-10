@@ -37,6 +37,7 @@ def degreeMonitor(dataQ):
         #push back by one
         secLast, last, curr = last, curr, dataQ.qsize()
         f.write("[DEBUG] Queue length = " + str(curr) + ", at time = "+str(datetime.datetime.today())+"\n")
+        f.flush()
         if((((curr - last) - (last - secLast)) > 5000) and (secLast > 50000)):
             if crawlDeg.value == 0:
                 return                
@@ -93,10 +94,10 @@ def f1():
     x = multiprocessing.Process(target=degreeMonitor, args=(databaseQ,))
     x.start()
     for i in range(0, degreeCrawl):
-        ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, i, crawlDeg, True)))
+        ls.append(multiprocessing.Process(target=userize, args=(userDeck, usersSeen, databaseQ, i, crawlDeg, False)))
         ls[i].start()
     for j in range(degreeCrawl, (degreeDB+degreeCrawl)):
-        ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, dbEnd, True)))
+        ls.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, dbEnd, False)))
         ls[j].start() 
     #end gracefully
     signal.signal(signal.SIGTERM, signal_term_handler)
