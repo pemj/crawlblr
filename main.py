@@ -38,14 +38,17 @@ def degreeMonitor(dataQ):
         secLast, last, curr = last, curr, dataQ.qsize()
         f.write("[DEBUG] Queue length = " + str(curr) + ", at time = "+str(datetime.datetime.today())+"\n")
         f.flush()
-        if((((curr - last) - (last - secLast)) > 5000) and (secLast > 50000)):
+        if(((((curr - last) - (last - secLast)) > 5000) or ((curr - last) > 10000)) and (secLast > 50000)):
             if crawlDeg.value == 0:
                 return                
             if flag:
                 crawlDeg.value = crawlDeg.value - 1
+                f.write("[DEBUG] removed crawler, now at "+str(crawlDeg.value)+"\n")
                 flag = False
             else:
                 flag = True
+        else:
+            flag = False
         time.sleep(interStitial)
 
 #finds more users, adds user, post, and note info
