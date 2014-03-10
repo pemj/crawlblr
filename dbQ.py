@@ -5,7 +5,7 @@ import sqlite3
 from multiprocessing import Queue, Manager
 from queue import Empty
 
-def dbQ(crawlQ, end, debug):
+def dbQ(crawlQ, num, end, debug):
     #determines how many entries we write before committing.
     writeThresh = 2500
 

@@ -11,7 +11,7 @@ import os
 
 
 
-def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
+def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
         username = userDeck.get(True, 5)
     except Empty:
@@ -230,7 +230,7 @@ def crawlUser(userDeck, usersSeen, dataQ, num, end, debug):
                     else:
                         rebloggedFrom = rebloggedFrom[0].get('href').replace("http://", "").replace(".tumblr.com/", "")                       
                     dataQ.put((identity, rebloggedFrom, postNumber, noteType))
-                    if end.value < num:
+                    if end.value:
                         dataQ.put((username, updated, postCount))
                         f.write("[EXIT] received exit, shutting down process " + str(pid)+"\n")
                         return "yeah"
