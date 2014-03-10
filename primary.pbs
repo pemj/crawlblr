@@ -1,0 +1,29 @@
+#!/bin/bash -l
+## Lines preceded by "#PBS" are directives for Torque/PBS
+## this line tells Torque the name of the batch job
+#PBS -N crawlblr
+## this line tells Torque which queue to submit to
+## see /INFO/queus.txt for a description of available queues
+#PBS -q generic
+## resource list:
+##  requests 1 node and 12 processors per node
+#PBS -l nodes=1:ppn=12
+##  requests 24 hrs 
+#PBS -l walltime=24:00:00
+## tell Torque which is the working directory for your job
+#PBS -d /home4/pem/crawlblr
+## tell Torque which directory or file to use for batch script output
+#PBS -o /home4/pem/crawlblr/log
+## tell Torque which directory or file to use for batch script errors
+#PBS -e /home4/pem/log
+
+# Load any modules needed to run your software
+# see /INFO/modules-howto.txt for a mini-howto on Modules
+
+module load python/3.3.4
+
+# execute program here:
+#  myJob is the program I want to run
+#  myInputFile.inp is an input file to pass to myJob
+#  myOutputFile.out is the file where output from myJob is dumped
+python3 main.py > std.out
