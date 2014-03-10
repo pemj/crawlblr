@@ -26,8 +26,8 @@ def degreeMonitor(dataQ):
     f.write("start monitor\n")
     global crawlDeg
 
-    delayStart = 30
-    interStitial = 5
+    delayStart = 180
+    interStitial = 25
     secLast = 0
     last = 0
     curr = 0
