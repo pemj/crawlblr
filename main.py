@@ -21,10 +21,9 @@ def signal_term_handler(signal, frame):
     time.sleep(2)
          
 
-def degreeMonitor(dataQ, debug):
+def degreeMonitor(dataQ, dbEnd, debug):
     f = open('database/queueLen', 'w')
     f.write("start monitor\n")
-    global dbEnd
     localDeg = 0
 
     delayStart = 180
@@ -50,7 +49,7 @@ def degreeMonitor(dataQ, debug):
                     localWorkers.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, dbEnd, debug)))
                     localWorkers[x].start()                    
                 localDeg += 5
-                f.write("[DEBUG] added workers, now at "+str(localDeg.value)+"\n")
+                f.write("[DEBUG] added workers, now at "+str(localDeg)+"\n")
                 flag = False
             else:
                 flag = True
@@ -88,8 +87,8 @@ def dataEntry(dataDeck, num, end, debug):
 
 def f1():
     #degree of multiprocessing
-    degDB = 150
-    degreeCrawl = 500
+    degDB = 1
+    degreeCrawl = 25
     
     global manager
     global crawlEnd
@@ -110,7 +109,7 @@ def f1():
         ls[j].start() 
     #end gracefully
     signal.signal(signal.SIGTERM, signal_term_handler)
-    x = multiprocessing.Process(target=degreeMonitor, args=(databaseQ, False))
+    x = multiprocessing.Process(target=degreeMonitor, args=(databaseQ, dbEnd, False))
     x.start()    
     for proc in ls:
         proc.join()
