@@ -45,11 +45,11 @@ def degreeMonitor(dataQ, dbEnd, debug):
                 f.write("[DEBUG] end of database situation, killing database spawner")
                 return
             if flag:
+                f.write("[DEBUG] adding workers, nearly at "+str(localDeg)+"\n")
                 for x in range(localDeg, localDeg + 5):
                     localWorkers.append(multiprocessing.Process(target=dataEntry, args=(databaseQ, dbEnd, debug)))
                     localWorkers[x].start()                    
                 localDeg += 5
-                f.write("[DEBUG] added workers, now at "+str(localDeg)+"\n")
                 flag = False
             else:
                 flag = True
