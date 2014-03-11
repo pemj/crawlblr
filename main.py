@@ -87,8 +87,8 @@ def dataEntry(dataDeck, num, end, debug):
 
 def f1():
     #degree of multiprocessing
-    degDB = 1
-    degreeCrawl = 25
+    degDB = 200
+    degreeCrawl = 400
     
     global manager
     global crawlEnd
