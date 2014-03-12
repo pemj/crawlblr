@@ -3,17 +3,14 @@ import subprocess
 import re
 import sqlite3
 
-#remove the final if we have it
-os.unlink('final.db')
-
 #fill the list of database filenames, dbFiles
-output, error= subprocess.Popen(["ls"], stdout=subprocess.PIPE).communicate()
+output, error= subprocess.Popen(["ls database"], stdout=subprocess.PIPE).communicate()
 filePattern = re.compile('^[a-z0-9A-Z_]+(\.db)+$')
 li = [x.decode('utf-8') for x in output.split(b'\n')]
 dbFiles = [x for x in li if filePattern.match(x)]
 
 #initialize the destination database
-conn = sqlite3.connect('final.db')
+conn = sqlite3.connect('database/finaltimate.db')
 c = conn.cursor()
 c.execute('''create table if not exists users
 (username text, lastUpdated text, postCount integer)''')
@@ -35,6 +32,7 @@ for base in dbFiles:
     c.execute('''detach toMerge''')
     #finalize the changes
     conn.commit()
+    print("Added "+base+"\n")
 #close our connection, we're done.
 c.close()
 
