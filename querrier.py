@@ -2,7 +2,7 @@ import sqlite3
 #get most popular types of posts
 postPopularity = '''SELECT type, count(type) + noteCount AS count
 FROM posts
-GROUP BY postType
+GROUP BY type
 ORDER BY count'''
 
 
@@ -50,15 +50,15 @@ c = conn.cursor()
 
 f = open('popularity.txt', 'w')
 for row in c.execute(postPopularity):
-    f.write(row)
+    f.write(str(row))
 f.close()
 
 f = open('reblogsvsoriginal.txt', 'w')
 for row in c.execute(reblogPostPopularity):
-    f.write(row)
+    f.write(str(row))
 f.close()
 
 f = open('userRelations.txt', 'w')
-for row in c.execute(userRelations.txt):
-    f.write(row)
+for row in c.execute(userRelations):
+    f.write(str(row))
 f.close()
