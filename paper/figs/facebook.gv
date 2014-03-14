@@ -1,0 +1,11 @@
+digraph finite_state_machine {
+	rankdir=LR;
+	size="8,5"
+	node [shape = circle]; 
+	F_1 -> F_2 [dir=both label = "friendship" ];
+	F_2 -> P_1 [ label = "like" ];
+	F_3 -> P_1 [ label = "like" ];
+	F_4 -> F_5 [ dir=both label = "friendship" ];
+	F_1 -> G_1 [ label = "membership" ];
+	F_4 -> G_1 [ label = "membership" ];
+}
