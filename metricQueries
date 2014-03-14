@@ -19,11 +19,19 @@ INNER JOIN
 ON original.username = likes.source
 WHERE filter = recipient
 
+
+
+
+
 --get most popular types of posts
-SELECT postType, count(postType) + noteCount AS count
+SELECT type, count(type) + noteCount AS count
 FROM posts
 GROUP BY postType
 ORDER BY count
+
+
+
+
 
 --get number of posts and reblogs from users
 SELECT DISTINCT op.username, reblogs.count, original.count + reblogs.count AS total
