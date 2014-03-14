@@ -1,7 +1,7 @@
 #!/bin/bash -l
 ## Lines preceded by "#PBS" are directives for Torque/PBS
 ## this line tells Torque the name of the batch job
-#PBS -N crawlblr
+#PBS -N querrier
 ## this line tells Torque which queue to submit to
 ## see /INFO/queus.txt for a description of available queues
 #PBS -q generic
@@ -11,7 +11,7 @@
 ##  requests 24 hrs 
 #PBS -l walltime=24:00:00
 ## tell Torque which is the working directory for your job
-#PBS -d /home4/pem/crawlblr
+#PBS -d /home4/pem/crawlblr/database
 ## tell Torque which directory or file to use for batch script output
 #PBS -o /home4/pem/crawlblr/log
 ## tell Torque which directory or file to use for batch script errors
