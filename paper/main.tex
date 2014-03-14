@@ -1,0 +1,63 @@
+\documentclass[10pt,twocolumn]{IEEEtran11}
+\usepackage{algpseudocode}
+\usepackage{times}
+\usepackage{cite}
+\usepackage{epsfig}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\oddsidemargin -15pt
+\evensidemargin -15pt
+\leftmargin 0 pt
+\topmargin -30pt
+\textwidth = 6.9 in
+\textheight = 9.0 in
+\makeatletter
+\newcommand{\removelatexerror}{\let\@latex@error\@gobble}
+\makeatother
+\newcommand{\itembase}{\setlength{\itemsep}{0pt}}
+\newcommand{\eg}{{\it e.g., }}
+\newcommand{\ie}{{\it i.e., }}
+\graphicspath{{figs/}}
+
+\begin{document}
+%\input{psfig.sty}
+\bibliographystyle{IEEE}
+
+\title{\Large \bf tumblr famous: Inferring Information and Classifying Structure of a Distinct Online Social Network
+%\thanks{
+}
+\author{
+Peter McKay\\
+Information and Computer Science Department\\
+University of Oregon\\
+{\em pem@cs.uoregon.edu}
+}
+\maketitle
+% You have to do this to suppress page numbers.  Don't ask.
+%\pagestyle{empty}
+\input{abstract}
+
+\begin{keywords} 
+OSN, Data Mining, tumblr
+\end{keywords}
+
+
+
+\input{intro}
+\input{background}
+\input{methodology}
+\input{results}
+\input{conclusion}
+
+\section{Acknowledgments}
+We thank Bryan Clement, for lending his expertise in SQL and python to 
+the project as a consultant. We also thank Ellen Klowden, MSW, for 
+editorial ssistance.
+
+%\small
+\bibliography{citations}
+\end{document}

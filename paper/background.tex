@@ -1,0 +1,119 @@
+\section{Background}
+\label{sec:-back}
+\subsection{OSN Research}
+Human interaction over the internet has been a boon to sociologists, 
+who suddenly have an open window into a tremendous amount of information 
+that does not require invasive experiments to study.  However, 
+historically, these interactions have taken place in very different 
+segments of the world wide web.  It is not feasible to aggregate the 
+actions of a single person over their entire presence on the Internet.  
+The largely heterogeneous nature of this traffic prevents the easy 
+classification of data.  
+
+However, when the environment for such a series 
+of interactions becomes flattened into a single, consistent topology, 
+we are able to extract great quantities of data.  Online social 
+networks are capable of providing such ecosystems.  Oddly enough, 
+for such a popular network, tumblr has seen little study.  What studies 
+do exist originate primarily from the social sciences, rather than computer 
+science. 
+
+ We contrast tumblr with the following networks, in order to classify 
+what makes tumblr distinct enough to warrant research, and what has 
+made other networks more popular with research.
+
+\subsection{Twitter}
+\begin{figure}[bht]
+\centering
+ \includegraphics[width=3.0in]{twitter}
+ \caption{An example of information flow over Twitter, from content Generators \(G\_1\) to content consumers/Distributors \(D\)}
+ \label{fig:twitter}
+\end{figure}
+Twitter, in particular, has seen a massive flurry of research.  There 
+are a number of reasons that it has been very popular with researchers.  
+For one thing, Twitter is an extremely mature platform, as far as OSNs 
+go.  This has resulted in a number of attractive characteristics, 
+including but not limited to an ironclad API, a very large userbase, 
+and a comparatively long history that lends the enterprise a rich 
+contextual basis for research.  In addition, the restriction on the 
+heterogeneity and length of Twitter content makes it possible to carry 
+out analysis of greater breadth and depth, respectively.
+
+
+Superficially, their network shares nearly all of the same linkages.  
+Users have the ability to contribute content to the network 
+(post/tweet),re-transmit content over the network (reblog/retweet), 
+mark content for attention of other users (@user), signify their 
+interest in content (like/favorite), and tag content (dedicated 
+tagspace, inline hashtags). When one begins to explore these areas of 
+functionality further, we discover a number of implementation details 
+that lead to divergence of form and topology.  The unrestricted length 
+of tumblr posts leads to a different usage profile; users are likely to 
+spend hours at a time\cite{duggan2013demographics} browsing their 
+tumblr feeds.  
+
+
+In addition, while both Twitter and tumblr support multiple tags and 
+user attention markers (\#s and @s, respectively), Twitter counts these 
+markers against the character limit, restricting the degree of 
+``multicast'' possible for a given post.  As tumblr has no restriction 
+on message length, it allows for an arbitrary degree of multicast and 
+sorting.  This means that users are far more likely to cross-reference 
+posts over multiple tags, creating a more comprehensive system of tag-based 
+navigation, in which one can execute complex Boolean searches over posts.  
+This has led to unanticipated emergent features. One of the most 
+remarkable of these features leads to an increase in accessability for 
+sufferers of post traumatic stress disorder.  It is considered good 
+tumblr etiquette to tag certain pieces of sensitive content with trigger 
+warnings appropriate to the subject matter.  This allows users with 
+posttraumatic stress disorder and other sufferers of psychological 
+trauma to filter their experience, constructing a personal overlay 
+which is devoid of content that may otherwise cause panic attacks or 
+other negative psychological associations.
+
+
+\subsection{Facebook}
+\begin{figure}[bht]
+\centering
+ \includegraphics[width=3.0in]{facebook}
+ \caption{An example of several different connections over Facebook: friendship, group membership, and liking of pages}
+ \label{fig:facebook}
+\end{figure}
+Facebook's functionality can nearly be considered a superset of Twitter's.  
+While the 
+only user-user relationship in Twitter is the directional following 
+relationship, Facebook users are more likely to interact using its 
+bidirectional friendship relationship.  In addition to users and their 
+posts, Facebook users may also interact with Pages and Groups.  Unlike 
+Twitter, many Facebook conversations are private, and the users have a 
+greater degree of control over what pieces of information are shared 
+with each other user.  But while Facebook users are placed in control of 
+outgoing information, tumblr users place a great deal of stock in their 
+ability to control incoming information, as discussed above.
+
+ 
+Similar to Twitter, Facebook has a very large dataset.  While attempts 
+to study it may fall prey to the complexity resulting from the 
+heterogeneity of its content, that same quality can present a much 
+broader set of data if analyzed correctly.
+
+\subsection{Demographics}
+tumblr has a larger usage base in the teenage demographic than any 
+other OSN currently in use.  Perhaps this has contributed to the view 
+of tumblr as an ``immature'' subject for research, compared to other 
+networks.  Additionally, its API is notably less mature and 
+featured when compared to, for example, Twitter.  Google+ was founded 
+by a company that has literally made its money from cleverly 
+associating users and content, and built its network with that 
+obsession with analysis in mind, even going so far as to collaborate 
+with researchers carrying out studies\cite{kairam2012talking}.  By contrast, tumblr was 
+created independently before being taken over by Yahoo, leading to an 
+infrastructure less well-suited for study
+
+\cite{alexander2002introduction}
+
+We observe that a closed environment in the context
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 
