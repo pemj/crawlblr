@@ -1,69 +1,64 @@
 \section{Introduction}
 \label{sec:-intro}
 
-OSNs clearly benefit from an economy of scale.  As users flock to a 
-network, it becomes easier for them to find their friends, and it 
-becomes easier for the network to generate ad revenue.  Why, then, 
-do users continue not only to sign up for different networks from their 
-friends, but also to multiple networks simultaneously?  How do we explain the 
-glaring absence of a single, all-powerful OSN, one killer app for the 
-social networking age?  Obviously, not all OSNs are created equal.  
-Facebook certainly seems to be trying to structure their service 
-as an Internet overlay providing all necessary services (news, video, 
-music, games, messaging, employment, to enumerate a few), and may even 
-be expanding into the aerospace business in order to offer their 
-services to areas of the developing world without access to traditional 
-landline-based internet connectivity.  And yet, users seem to prefer 
-a series of compartmentalized environments optimized for different 
-usage profiles.
 
-OSNs entered the picture on the heels of the blogosphere, which became 
-one of the dominant modes of online communication, themselves 
-successors to the BBS scene.  As technology enables new ways of 
-relating with others, the older methods have largely fallen by the 
-wayside.  Or have they?  While Myspace, Facebook, and Twitter professed 
-to be entirely new ways of relating to people, tumblr emphasizes the 
-familiar, quick solution.  Why, they ask, should one go through the 
-trouble to arrange for an account on Blogspot, Blogger, or Wordpress 
-when you're only thirty seconds away from your first post, the 
-beginning of the Great American Novel?
+Historically, OSNs have benefited from an economy of scale.  As users 
+flock to a network, it becomes easier for them to find their friends, 
+and it becomes easier for the network to generate ad revenue.  However, 
+if this were more than a back-of-the-napkin sort of rule, we would 
+expect a single killer-app of social networking to reach 100\% market 
+penetration.  Instead, a variety of large social networks continue 
+to exist side by side.  Users seem to prefer a series of different 
+networks, with different sets of functionality.  While we cannot 
+outright discount the possibility that purely social forces have led to the 
+propagation of different networks, previous studies on the structures 
+of OSNs such as Twitter\cite{kwak2010twitter} and Facebook\cite{brokencitation}
+seem to indicate that the functional structure of the content 
+distribution/interaction system has a significant influence on what set of 
+users is likely to participate in that system, as well as how those users 
+are likely to participate in that system.
 
 
-Each generation has its media scare, the new subject that parents 
-never had to deal with when they were kids, and that they now find 
-themselves in a position to regulate their children's access to said 
-subject.  We have run the gamut on moral panic followed by eventual 
-settling down into the new order.  Where once parents may be concerned 
-about their children's behavior after reading violent comic books, many 
-parents now find themselves in a position to
-violent television, violent videogames, the unrestricted and 
-intimidatingly public world of internet blogging.
+With that assumption in mind, we posit that tumblr's position as a 
+comparatively popular OSN may partially reflect some 
+set of functional differences from other social networks.  However, to 
+the best of our knowledge, tumblr has not yet been the subject of 
+a rigorous research project investigating its structural 
+and functional properties.  We propose to carry out an exploratory study, 
+investigating several properties of tumblr, positing several preliminary 
+theories as to the effects of these properties, and developing a reusable 
+model for representing and collecting information from tumblr while so 
+doing.
 
-While it seems that the so-called blogosphere is entering a decline 
-as users move to dedicated social media platforms, an analysis of the 
-phenomena by the New York Times\cite{kopytoff2011blogs} indicates that 
-the ``death of blogging'' is closer to an evolution.  As users move to 
-OSNs such as Facebook, Twitter, and Tumblr, they
-tumblr is an odd duck.  Not only does it exhibit a demographic usage 
-pattern when compared to other OSNs,
+As a consequence of tumblr's structure, we found that the process of 
+data collection was best enabled by the construction of a 
+tumblr-specific web crawler.  This web crawler was designed to gather 
+as much information as was feasible and analyzable within the time-frame 
+dictated by the nature of the project.  We present a more complete 
+outline of this process in Section \ref{sec:-method}.  We constructed 
+our crawler, and deployed it onto a node of the ACISS supercomputing 
+cluster at the University of Oregon.  We gathered data in one 24-hr 
+round, and two 48-hr rounds, and compiled the data thus gathered into a 
+22-gigabyte relational database.  This information was primarily arranged 
+as nodes representing users and posts, and edges relating users to 
+posts in various ways. Our research questions were then translated into 
+queries on that database, also carried out using an ACISS node.
 
- in many ways it tries to unify 
-the sort of simple wordpress blog experience that has been popular 
-across the web, creating a sort of 
+We present the results of our queries, and the analysis of those results, 
+in Section \ref{sec:-res}.  We outline the development of a preliminary 
+method for classifying user->user relationships, based on available 
+user->content relationships.  While this method is computationally 
+expensive over larger datasets, we nevertheless manage to 
+
+We present a collection of data indicating the degree to which users 
+generally create original content, compared to the degree to which they 
+reblog the content of other users.
 
 
+In Section \ref{sec:-conc}, we consider some implications of the data 
+we have gathered, and furthermore posit ideas for future research in 
+this direction.
 
-Many popular online social networks coexist without necessarily 
-impinging on each other's markets shares.  This is possible because 
-different OSNs fill difference niches in the social interactions 
-between users.  In the light of the quantity and quality of research 
-that has been carried out in the service of studying OSNs such as 
-Twitter, the question of whether or not such illuminating results 
-can be extracted from other networks is an intriguing one.  
-
-This is also, however, a difficult question to answer.  While some 
-social networks such as Twitter and Google+ seem nearly designed to 
-expose information to the canny researcher, tumblr maintains 
 
 
 

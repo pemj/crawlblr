@@ -1,0 +1,34 @@
+graph ER {
+	node [shape=box]; user; post; note;
+	node [shape=ellipse]; {node [label="username"] name0; name1; name2;} 
+	{node [label="postID"] postid0; postid1;} postType; postCount;  
+	{node [label="via username"] name3;} {node [label="via postID"] postid2;}
+	noteType; dateJoined; noteCount; datePosted; rebloggedFrom
+	node [shape=diamond,style=filled,color=lightgrey]; "posts"; "is noted by";
+	
+	user -- name0
+	user -- dateJoined
+	user -- postCount
+
+	user -- "posts" [label="n"]
+	"posts" -- post
+	"posts" -- name3
+	
+	post -- name1
+	post -- postid0
+	post -- postType
+	post -- datePosted
+	post -- noteCount
+
+	post -- "is noted by" [label="n"]
+	"is noted by" -- note
+	"is noted by" -- postid2	
+
+	note -- name2
+	note -- postid1
+	note -- rebloggedFrom
+	note -- noteType
+
+	label = "\n\nEntity Relation Diagram";
+	fontsize=20;
+}
