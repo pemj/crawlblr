@@ -1,12 +1,12 @@
 \section{Methodology}
 \label{sec:-method}
 \subsection{Crawler Operation}
-The operation of the tumblr crawler, affectionately referred to as ``the crawlblr,'' 
+The operation of the Tumblr crawler, affectionately referred to as ``the crawlblr,'' 
 is described in the pseudocode in Fig. \ref{crawler}.  crawblr 
 ran on a long-generic ACISS node with twelve cores, with 512 crawler 
 instances and 200 database workers.  It operated in a 
 depth-first-per-process manner, in order to guarantee that we 
-established as complete a record as possible for the subset of tumblr 
+established as complete a record as possible for the subset of Tumblr 
 we surveyed. 
 \begin{figure}
   \input{crawlercode}
@@ -34,7 +34,7 @@ for analysis when crawlblr has finished.
 \end{figure*}
 
 For each user, we logged their unique username, the number of posts 
-they have contributed to tumblr, and the date they joined. 
+they have contributed to Tumblr, and the date they joined. 
 
 For each of those posts, we logged the unique post identifier, the 
 date posted, the post type, and the number of notes.
