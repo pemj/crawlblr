@@ -1,0 +1,53 @@
+digraph ER { 
+      	overlap=prism
+      	splines=true
+	node [shape=box]; user1; user2; post; {node [label="note"] note0; note1;}
+	node [shape=ellipse]; {node [label="Alice"] Alice0; Alice1; Alice2;}
+	{node [label="Bob"] Bob0; Bob1;}
+	{node [label="Via Bob"] Bob2;}
+	{node [label="# of posts: 1"] postCountBob; postCountAlice}
+	{node [label="# of notes: 2"] noteCount;}
+	{node [label="id: 157189374"] postid0; postid1; postid2;} 
+	{node [label="created 2009-09-22"] dateBob;}
+	{node [label="created 2014-01-05"] datePosted;}
+	{node [label="created 2013-11-19"] dateAlice;}
+	photo; like; reblog;
+	node [shape=diamond,style=filled,color=lightgrey]; "follows?"; "liked"; "reblogged"; "posted";
+	
+	user1 -> Alice0[dir=none][len=.5];
+	user1 -> dateAlice[dir=none][len=.5];
+	user1 -> postCountAlice[dir=none][len=.5];
+
+	user1 -> "follows?" [style=dashed];
+	"follows?" -> user2 [style=dashed];	
+	
+	user2 -> Bob0[dir=none][len=.5];
+	user2 -> dateBob[dir=none][len=.5];
+	user2 -> postCountBob[dir=none][len=.5];
+	user2 -> "posted";
+	"posted" -> post[len=1];
+
+	
+	post -> Bob1[len=0.5][dir=none];
+	post -> postid0[len=0.5][dir=none];
+	post -> photo[len=0.5][dir=none];
+	post -> datePosted[len=0.7][dir=none];
+	post -> noteCount[len=0.5][dir=none];
+	
+	"reblogged" -> post[len=0.75];
+	note0 -> "reblogged"[len=.75];
+	"liked" -> post[len=.6];
+	note1 -> "liked";	
+
+	note0 -> Alice1[dir=none][len=.5];
+	note0 -> postid1[dir=none][len=.5];
+	note0 -> Bob2[dir=none][len=.5];
+	note0 -> reblog[len=0.50][dir=none][len=.5];
+
+	note1 -> Alice2[len=0.5][dir=none];
+	note1 -> postid2[dir=none];
+	note1 -> like[dir=none][len=.5];
+
+	label = "\n\nDoes Alice Follow Bob?";
+	fontsize=20;
+}

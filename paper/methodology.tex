@@ -1,57 +1,147 @@
 \section{Methodology}
 \label{sec:-method}
-\subsection{Crawler Operation}
-The operation of the Tumblr crawler, affectionately referred to as ``the crawlblr,'' 
-is described in the pseudocode in Fig. \ref{crawler}.  crawblr 
-ran on a long-generic ACISS node with twelve cores, with 512 crawler 
-instances and 200 database workers.  It operated in a 
-depth-first-per-process manner, in order to guarantee that we 
-established as complete a record as possible for the subset of Tumblr 
-we surveyed. 
+
+\subsection{Challenges}
+Several properties of the Tumblr network make a hybrid web crawler the 
+only tool capable of extracting information from it effectively within 
+the time frame of this project.  
+
+Tumblr, unlike Twitter, does not assign unique numerical identifiers 
+to its users.  Instead, users are referred to only by the plaintext URL 
+that forms their identity.  This complex identifier makes the traversal 
+of Tumblr over the namespace unfeasible.  Instead, user identification 
+must rely upon encounters of those names in a corpus of data.
+
+We construct a program to start with a single user seed, and proceed 
+through all publicly available connections with that user, collecting 
+additional usernames on which to repeat this process.  There are a 
+number of API tools provided by Tumblr to make accessing its network 
+via standalone applications possible.  Unfortunately, those tools were 
+designed with a different set of functionality in mind.  The API 
+client wrappers do not provide a complete enough set of data for the 
+analyses we had in mind.  They do, however, provide a crucial subset 
+that cannot be extracted via any other method.
+
+The Tumblr API can be accessed through several different wrapper 
+libraries.  Early in the project, we decided to use Python to create 
+our Tumblr data collection mechanism.  Python was chosen for its 
+low prototype-to-application turnaround time, its robust 
+multiprocessing capabilities, and the perceived efficacy of the 
+Python client library for the Tumblr API.  Unfortunately, the Python 
+library abstracts away a great deal of important functionality, 
+including a very brittle JSON-parsing system.  The library did not 
+react well to the presence of Unicode characters within the API 
+responses.  Unfortunately, Unicode characters are one of the primary 
+means by which users customize the look and feel of their blogs and 
+blog entries.
+
+For this reason, the API wrapper was discarded in favor of direct 
+access via HTTP.  This solved the Unicode corruption.  Unfortunately, 
+the API was deficient in other areas.  It did not reliably distinguish 
+between reblogs and original posts, it did not always return results 
+that matched the specifications according to the documentation, it did 
+not return well-formed data regarding notes and posts, and in the case 
+of corrupt requests, it generally broke in interesting ways rather 
+than predictable ones.
+
+For these reasons, we supplemented access to the API with the actions 
+of an HTML crawler over each user.  The differences in HTML generated 
+by the user themes prevented reliable access to certain data points, 
+but between the API responses and the HTML we were able to build a 
+clear picture of user activity over the section of Tumblr we 
+traversed.  The operation of the crawler we created is described 
+in detail in the following subsection, and in Figure\ref{crawler}.
+
+\subsection{Data Collection}
+
+The crawler processes ran on a long-generic ACISS node with twelve 
+cores, with 512 crawler instances pulling data from the network, 
+and 200 database workers storing that data in a relational database.
+
 \begin{figure}
   \input{crawlercode}
   \caption{Crawler operation}\label{crawler}
 \end{figure}
 
-As notes on a post are retained across reblogs, we defer the analysis 
-of reblogged posts, by adding the source to the list of users to crawl.  
-In so doing, we avoid double-counting, as post IDs are not retained 
-across reblogs, preventing non-trivial uniqueness checking.
+We have found that reblogs do not share the same post ID as the original 
+post.  In order to avoid adding duplicate posts (and the shared notes 
+associated with those posts) to the record, we defer the collection of 
+reblogged posts, adding the origin of that post to the queue, to be 
+crawled by a subsequent instance.  When that user that originally 
+created the content is crawled, that post will contain reblog 
+information linking that reblogging user, and the user from whom they 
+reblogged the content from.  Each reblog is therefore not only a 
+relation between a user and a post, but potentially between three 
+uses in total: user Alice who creates content, user Bob who reblogs 
+that content from Alice, and use Charles who reblogs Alice's content 
+via Bob.
 
-Users, notes, and pages are saved as tuples before being passed to a 
-managed queue in shared memory.  The database worker pulls from this 
-queue, and uses the cardinality of the tuples to discern which table 
-in the SQLite database should take the information.  Each database 
-process maintains a separate database, in order to parallelize the 
-filesystem writes.  A separate program merges the databases together 
-for analysis when crawlblr has finished.
-\subsection{Database Arrangement}
+
+These relationships are abstracted into record of users, notes, and pages, 
+represented by tuples and passed to a managed queue in 
+shared memory.  The database workers pull from this queue, and use 
+the cardinality of the tuples to discern which table in the SQLite 
+database should take the information.  Each database process 
+maintains a separate database file on disc, in order to maximize 
+speed-up from parallelization on filesystem writes.  Later, a 
+separate program stitched the databases together for subsequent 
+analysis.
+
+\subsection{Data Storage and Analysis}
 \begin{figure*}
 \centering
-\includegraphics[width=\textwidth]{relations}
+\includegraphics[width=\linewidth]{relations}
  \caption{Here we see a hypothetical relationship between two users}
  \label{fig:relations}
 \end{figure*}
-
 For each user, we logged their unique username, the number of posts 
 they have contributed to Tumblr, and the date they joined. 
-
 For each of those posts, we logged the unique post identifier, the 
 date posted, the post type, and the number of notes.
+For each of those notes, we log the username of the user who created 
+the note, the username of the user they reblogged it from (blank if 
+it's a like), the type, and the unique ID of the post this note is 
+associated with.  From this data, we identify several questions of 
+interest.
 
-Notes can take two forms: 
+We answer these questions using a multistage process.  First, we 
+developed SQL queries and tested them against the small subsections 
+of the database before deploying them onto the completely stitched 
+together database.  Some of the results from this stage were not yet 
+in a form that is conducive to easy comprehension by humans.  To 
+further process some of this data, we made use of a Python extension 
+called NumPy, a tool designed to support the storage and analysis of 
+very large sets of data.  Once this data has been reduced to a salient 
+array of data points, we used gnuplot to generate the bar graphs seen 
+later in the paper.
 
-user likes content and 
 
-user1, via user2, reblogs content.
+Firstly, and most simply, we would like to know what kind of post is 
+most popular among users.  There are two ways to measure popularity: we 
+could either monitor the prevalence of that type over all of the posts 
+in our corpus of data, or we could monitor the note count over all such 
+posts.  We have measured both, and present the results in the following 
+section.
+
+We would also like to know some things about the shape of the Tumblr 
+network.  For this reason, we have analyzed the number of reblogs per 
+user, and compared it to the number of original posts for those same 
+users.  In addition, we present the number
+
+
+We posit that we can identify potential links between users by looking 
+at the likes and reblogs across content associated with those users.
+
 
 We present the following logic as a technique for identifying potential 
 links of the form user1 follows user2.
 
-Likes and reblogs on reposts are conserved over all copies.  For likes, 
+
+There are several properties of the network that bear mentioning before 
+we dive into the specifics of how to analyze our data.  Firstly, likes 
+and reblogs are conserved across all instances of a post.  For likes, 
 this means that a like on a reblog of content is indistinguishable from 
-a like on the original piece of content itself, or a like on all 
-separate instances of the content.
+a like on the original piece of content itself.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "main"
