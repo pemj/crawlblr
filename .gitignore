@@ -14,3 +14,11 @@ re
 venv.bash
 crawl.lock
 *.db-journal
+*.aux
+*.log
+*.bst
+*.blg
+*.sty
+*.cls
+*.ps
+*.pdf
