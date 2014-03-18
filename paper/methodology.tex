@@ -2,7 +2,7 @@
 \label{sec:-method}
 
 \subsection{Challenges}
-Several properties of the Tumblr network make a hybrid web crawler the 
+Several properties of the Tumblr network make a complex web crawler the 
 only tool capable of extracting information from it effectively within 
 the time frame of this project.  
 
@@ -10,7 +10,7 @@ Tumblr, unlike Twitter, does not assign unique numerical identifiers
 to its users.  Instead, users are referred to only by the plaintext URL 
 that forms their identity.  This complex identifier makes the traversal 
 of Tumblr over the namespace unfeasible.  Instead, user identification 
-must rely upon encounters of those names in a corpus of data.
+must rely upon encounters with those names in a corpus of data.
 
 We construct a program to start with a single user seed, and proceed 
 through all publicly available connections with that user, collecting 
@@ -50,7 +50,7 @@ by the user themes prevented reliable access to certain data points,
 but between the API responses and the HTML we were able to build a 
 clear picture of user activity over the section of Tumblr we 
 traversed.  The operation of the crawler we created is described 
-in detail in the following subsection, and in Figure\ref{crawler}.
+in detail in the following subsection, and in Figure \ref{crawler}.
 
 \subsection{Data Collection}
 
@@ -67,17 +67,17 @@ We have found that reblogs do not share the same post ID as the original
 post.  In order to avoid adding duplicate posts (and the shared notes 
 associated with those posts) to the record, we defer the collection of 
 reblogged posts, adding the origin of that post to the queue, to be 
-crawled by a subsequent instance.  When that user that originally 
+crawled by a subsequent instance.  When the user that originally 
 created the content is crawled, that post will contain reblog 
 information linking that reblogging user, and the user from whom they 
-reblogged the content from.  Each reblog is therefore not only a 
+reblogged the content.  Each reblog is therefore not only a 
 relation between a user and a post, but potentially between three 
-uses in total: user Alice who creates content, user Bob who reblogs 
+uses in total: User Alice who creates content, user Bob who reblogs 
 that content from Alice, and use Charles who reblogs Alice's content 
 via Bob.
 
 
-These relationships are abstracted into record of users, notes, and pages, 
+These relationships are abstracted into records of users, notes, and pages, 
 represented by tuples and passed to a managed queue in 
 shared memory.  The database workers pull from this queue, and use 
 the cardinality of the tuples to discern which table in the SQLite 
@@ -101,27 +101,46 @@ date posted, the post type, and the number of notes.
 For each of those notes, we log the username of the user who created 
 the note, the username of the user they reblogged it from (blank if 
 it's a like), the type, and the unique ID of the post this note is 
-associated with.  From this data, we identify several questions of 
-interest.
+associated with.  While these records sum up the data nodes we have, 
+the edges relating these nodes are only exposed upon analysis on this 
+data set.  Of the many ways these data can be related, we examine only 
+a fraction within the narrow time frame of this project.
 
-We answer these questions using a multistage process.  First, we 
-developed SQL queries and tested them against the small subsections 
-of the database before deploying them onto the completely stitched 
-together database.  Some of the results from this stage were not yet 
-in a form that is conducive to easy comprehension by humans.  To 
-further process some of this data, we made use of a Python extension 
-called NumPy, a tool designed to support the storage and analysis of 
-very large sets of data.  Once this data has been reduced to a salient 
-array of data points, we used gnuplot to generate the bar graphs seen 
-later in the paper.
+While we only have access to explicit links between users and content, 
+we speculate that these connections reflect the implicit connections 
+between users.  The first hypothesis we ventured in the course of this 
+research was that a collection of likes and reblogs concerning a pair 
+of users, if carefully collected and isolated from external data, 
+represent a ``user follows user'' relationship.  Specifically, if a 
+user likes a statistically significant (compared to the activity level 
+of that user) number of pieces of content published by another user, 
+that may indicate that the first user follows the second.  In addition, 
+if the first user has also reblogged content via that second user, this 
+is another data point that, when taken together with the first, may 
+suggest a following relationship.  By encoding these notions into a 
+query over the database, we develop a prototypical method for 
+identifying user followers, and show some samples from our application 
+of that method to our dataset.
+
+
+We also venture answers to some more conventional questions.  These, 
+we answer using a multistage process.  First, we developed SQL queries 
+and tested them against the small subsections of the database before 
+deploying them onto the completely stitched-together database.  Some 
+of the results from this stage were not yet in a form that is conducive 
+to easy comprehension by humans.  To further process some of this data, 
+we made use of a Python extension called NumPy, a tool designed to 
+support the storage and analysis of very large sets of data.  Once 
+this data had been reduced to a salient array of data points, we used 
+gnuplot to generate the bar graphs seen later in the paper.
 
 
 Firstly, and most simply, we would like to know what kind of post is 
-most popular among users.  There are two ways to measure popularity: we 
+most popular among users.  There are two ways to measure popularity: We 
 could either monitor the prevalence of that type over all of the posts 
 in our corpus of data, or we could monitor the note count over all such 
-posts.  We have measured both, and present the results in the following 
-section.
+posts.  We have measured both separately, and present the results in the 
+following section.
 
 We would also like to know some things about the shape of the Tumblr 
 network.  For this reason, we have analyzed the number of reblogs per 
@@ -129,12 +148,7 @@ user, and compared it to the number of original posts for those same
 users.  In addition, we present the number
 
 
-We posit that we can identify potential links between users by looking 
-at the likes and reblogs across content associated with those users.
 
-
-We present the following logic as a technique for identifying potential 
-links of the form user1 follows user2.
 
 
 There are several properties of the network that bear mentioning before 
