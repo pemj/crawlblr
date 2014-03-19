@@ -540,3 +540,7 @@ users	had this percentage of reblogs
 10.11	70-80
 16.03	80-90
 30.53	90-100
+
+average: 70%
+median: 76%
+mode: 96%

@@ -30,7 +30,7 @@ Python client library for the Tumblr API.  Unfortunately, the Python
 library abstracts away a great deal of important functionality, 
 including a very brittle JSON-parsing system.  The library did not 
 react well to the presence of Unicode characters within the API 
-responses.  Unfortunately, Unicode characters are one of the primary 
+responses.  Unfortunately for us, Unicode characters are one of the primary 
 means by which users customize the look and feel of their blogs and 
 blog entries.
 
@@ -67,12 +67,12 @@ post, and that likes and reblogs are conserved across all instances of
 a post.  Therefore, in order to avoid adding duplicate posts (and their 
 associated notes) to the record, we defer the collection of reblogged 
 posts, adding the origin of that post to the queue, to be crawled by a 
-subsequent instance.  When the user that originally created the content 
+subsequent instance.  When the user who originally created the content 
 is crawled, that post will contain reblog information linking that 
-reblogging user, and the user from whom they reblogged the content.  
+reblogging user, and the user they reblogged it from.  
 Each reblog is therefore not only a relation between a user and a post, 
-but potentially between three uses in total: User Alice who creates 
-content, user Bob who reblogs that content from Alice, and use Charles 
+but potentially between three users in total: User Alice who creates 
+content, user Bob who reblogs that content from Alice, and user Charles 
 who reblogs Alice's content via Bob.
 
 
@@ -83,7 +83,7 @@ the cardinality of the tuples to discern which table in the SQLite
 database should take the information.  Each database process 
 maintains a separate database file on disc, in order to maximize 
 speed-up from parallelization on filesystem writes.  Later, a 
-separate program stitched the databases together for subsequent 
+separate program stitches the databases together for subsequent 
 analysis.
 
 \subsection{Data Analysis}
@@ -99,8 +99,8 @@ For each of those posts, we logged the unique post identifier, the
 date posted, the post type, and the number of notes.
 For each of those notes, we log the username of the user who created 
 the note, the username of the user they reblogged it from (blank if 
-it's a like), the type, and the unique ID of the post this note is 
-associated with.  While these records sum up the data nodes we have, 
+it's a like), the type, and the unique ID of the post with which this 
+note is associated.  While these records sum up the data nodes we have, 
 the edges relating these nodes are only exposed upon analysis on this 
 data set.  Of the many ways these data can be related, we examine only 
 a fraction within the narrow time frame of this project.
@@ -111,15 +111,15 @@ between users.  The first hypothesis we ventured in the course of this
 research was that a collection of likes and reblogs concerning a pair 
 of users, if carefully collected and isolated from external data, 
 represent a ``user follows user'' relationship.  Specifically, if a 
-user likes a statistically significant (compared to the activity level 
-of that user) number of pieces of content published by another user, 
-that may indicate that the first user follows the second.  In addition, 
-if the first user has also reblogged content via that second user, this 
-is another data point that, when taken together with the first, may 
-suggest a following relationship.  By encoding these notions into a 
-query over the database, we develop a prototypical method for 
-identifying user followers, and show some samples from our application 
-of that method to our dataset.
+statistically significant portion of user \#1's activity consists of 
+'liking' the posts of user \#2, that may indicate the first user 
+follows the second.  In addition, if the first user has also reblogged 
+content via that second user, this is another data point that, when 
+taken together with the first, may suggest a following relationship.  
+By encoding these notions into a query over the database, we
+develop an extensible prototype of a tool for identifying user followers,
+and show some samples from our application of that method
+to our dataset.
 
 
 We also venture answers to some more conventional questions.  These, 
