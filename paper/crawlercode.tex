@@ -1,0 +1,53 @@
+\begin{algorithmic}[1]
+    \Require usernames initialized with a well-connected user
+    \Procedure{Crawl}{$usernames,usersseen,dbQ$}
+    \While{usernames not empty}
+    \State $user.1 \gets usernames.pop$
+    \State $blog \gets open(user.1)$
+    \State $user.2 \gets blog.postCount$
+    \State $user.3 \gets blog.lastActive$
+    \State $dbQ.push(user)$ \Comment{send user to database worker}
+    \ForAll{posts in blog}
+    \If{post is reblogged}
+    \If{source not in usersseen}
+    \State $usersseen.push(post.source)$
+    \State $usernames.push(post.source)$
+    \EndIf
+    \State $Continue$\Comment{Go to next post}
+    \ElsIf {post is original}
+    \State $postOut.1 \gets user.1$
+    \State $postOut.2 \gets post.id$
+    \State $postOut.3 \gets post.type$
+    \State $postOut.4 \gets post.timestamp$
+    \State $postOut.5 \gets post.notecount$    
+    \State $dbQ.push(postOut)$
+    \ForAll{notes on post}
+    \State $noteOut.1 \gets note.source$
+    \State $noteOut.2 \gets note.via$
+    \State $noteOut.3 \gets post.id$
+    \State $noteOut.4 \gets note.type$
+    \State $dbQ.push(noteOut)$
+    \If{note.source not in usersseen}
+    \State $usersseen.push(note.source)$
+    \State $usernames.push(note.source)$
+    \EndIf
+    \If{note.via not in usersseen}
+    \State $usersseen.push(note.via)$
+    \State $usernames.push(note.via)$
+    \EndIf
+    \EndFor
+    \EndIf
+    \EndFor
+    \EndWhile
+    \State \textbf{return} $True$    
+    \EndProcedure
+    \Procedure{databaseWork}{$dbQ$}
+    \While{dbQ not empty}
+    \State $database.write(dbQ.pop)$
+    \EndWhile
+    \EndProcedure
+  \end{algorithmic}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 

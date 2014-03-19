@@ -14,13 +14,12 @@ must rely upon encounters with those names in a corpus of data.
 
 We construct a program to start with a single user seed, and proceed 
 through all publicly available connections with that user, collecting 
-additional usernames on which to repeat this process.  There are a 
+additional usernames with which to repeat this process.  There are a 
 number of API tools provided by Tumblr to make accessing its network 
 via standalone applications possible.  Unfortunately, those tools were 
 designed with a different set of functionality in mind.  The API 
 client wrappers do not provide a complete enough set of data for the 
-analyses we had in mind.  They do, however, provide a crucial subset 
-that cannot be extracted via any other method.
+analyses we had in mind.
 
 The Tumblr API can be accessed through several different wrapper 
 libraries.  Early in the project, we decided to use Python to create 
@@ -64,17 +63,17 @@ and 200 database workers storing that data in a relational database.
 \end{figure}
 
 We have found that reblogs do not share the same post ID as the original 
-post.  In order to avoid adding duplicate posts (and the shared notes 
-associated with those posts) to the record, we defer the collection of 
-reblogged posts, adding the origin of that post to the queue, to be 
-crawled by a subsequent instance.  When the user that originally 
-created the content is crawled, that post will contain reblog 
-information linking that reblogging user, and the user from whom they 
-reblogged the content.  Each reblog is therefore not only a 
-relation between a user and a post, but potentially between three 
-uses in total: User Alice who creates content, user Bob who reblogs 
-that content from Alice, and use Charles who reblogs Alice's content 
-via Bob.
+post, and that likes and reblogs are conserved across all instances of 
+a post.  Therefore, in order to avoid adding duplicate posts (and their 
+associated notes) to the record, we defer the collection of reblogged 
+posts, adding the origin of that post to the queue, to be crawled by a 
+subsequent instance.  When the user that originally created the content 
+is crawled, that post will contain reblog information linking that 
+reblogging user, and the user from whom they reblogged the content.  
+Each reblog is therefore not only a relation between a user and a post, 
+but potentially between three uses in total: User Alice who creates 
+content, user Bob who reblogs that content from Alice, and use Charles 
+who reblogs Alice's content via Bob.
 
 
 These relationships are abstracted into records of users, notes, and pages, 
@@ -87,7 +86,7 @@ speed-up from parallelization on filesystem writes.  Later, a
 separate program stitched the databases together for subsequent 
 analysis.
 
-\subsection{Data Storage and Analysis}
+\subsection{Data Analysis}
 \begin{figure*}
 \centering
 \includegraphics[width=\linewidth]{relations}
@@ -135,27 +134,28 @@ this data had been reduced to a salient array of data points, we used
 gnuplot to generate the bar graphs seen later in the paper.
 
 
-Firstly, and most simply, we would like to know what kind of post is 
-most popular among users.  There are two ways to measure popularity: We 
-could either monitor the prevalence of that type over all of the posts 
-in our corpus of data, or we could monitor the note count over all such 
-posts.  We have measured both separately, and present the results in the 
-following section.
+Firstly, and most simply, we would like to know about the popularity of 
+various posts among users.  There are several dimensions to the notion 
+of popularity.  We measure post popularity in three different ways.  
+We count the occurrences of each type of post, and we count the notes 
+on each type of post.  This tells us the relative popularity of posts 
+by type, but not much about the average post's popularity.  In order 
+to discern the average distance through the network of posts, we also 
+measure the number of reblogs over all posts.  The average number of 
+reblogs serves as an indicator of the degree to which the average 
+Tumblr post spreads across the network before losing steam.
+
 
 We would also like to know some things about the shape of the Tumblr 
-network.  For this reason, we have analyzed the number of reblogs per 
-user, and compared it to the number of original posts for those same 
-users.  In addition, we present the number
+network, beyond the average reach of a given post.  For this reason, 
+we have analyzed the number of reblogs per user, and compared it to 
+the number of original posts for those same users.  In so doing, we 
+hope to discover how many users are content contributors, and how 
+many are content redistributors. 
+
+We present the results of our data analysis in the following section.
 
 
-
-
-
-There are several properties of the network that bear mentioning before 
-we dive into the specifics of how to analyze our data.  Firstly, likes 
-and reblogs are conserved across all instances of a post.  For likes, 
-this means that a like on a reblog of content is indistinguishable from 
-a like on the original piece of content itself.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "main"

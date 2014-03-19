@@ -1,5 +1,6 @@
 set xlabel "reblogs/total posts"
 set xlabel font "Times-Roman, 12"
+set format y "%g %%" 
 set ylabel "users"
 set ylabel font "Times-Roman, 12"
 set xtics font "Times-Roman, 12"
