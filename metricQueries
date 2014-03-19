@@ -20,7 +20,21 @@ ON original.username = likes.source
 WHERE filter = recipient
 
 
+--More things for user relations
+--user likes
+SELECT notes.username AS source,  posts.username AS destination
+FROM notes
+INNER JOIN posts
+ON notes.postID = posts.postID
+WHERE notes.type = "like"
+ORDER BY notes.username
 
+
+--user reblogs
+SELECT username AS source, via AS destination
+FROM notes
+WHERE notes.type = "reblog"
+ORDER BY username
 
 
 --get most popular types of posts
