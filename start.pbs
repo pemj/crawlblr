@@ -4,12 +4,12 @@
 #PBS -N crawlblr
 ## this line tells Torque which queue to submit to
 ## see /INFO/queus.txt for a description of available queues
-#PBS -q generic
+#PBS -q longgen
 ## resource list:
 ##  requests 1 node and 12 processors per node
 #PBS -l nodes=1:ppn=12
-##  requests 24 hrs 
-#PBS -l walltime=24:00:00
+##  requests 96 hrs 
+#PBS -l walltime=96:00:00
 ## tell Torque which is the working directory for your job
 #PBS -d /home4/pem/crawlblr
 ## tell Torque which directory or file to use for batch script output
