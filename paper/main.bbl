@@ -44,6 +44,12 @@ Michelle Fleury,
 \newblock ``Yahoo to buy tumblr for \$1.1bn,''
 \newblock {\em BBC Business News}, 2013.
 
+\bibitem{thomas2012revisioning}
+Kayley Thomas,
+\newblock ``{Revisioning the smiling villain: Imagetexts and intertextual
+  expression in representations of the filmic Loki on Tumblr},''
+\newblock {\em Transformative Works and Cultures}, vol. 13, 2012.
+
 \bibitem{krishnamurthy2008few}
 Balachander Krishnamurthy, Phillipa Gill, and Martin Arlitt,
 \newblock ``A few chirps about twitter,''
@@ -122,5 +128,9 @@ Serena Hillman, Jason Procyk, and Carman Neustaedter,
 \newblock in {\em Proceedings of the companion publication of the 17th ACM
   conference on Computer supported cooperative work \& social computing}. ACM,
   2014, pp. 285--288.
+
+\bibitem{konczal2011parsing}
+M~Konczal,
+\newblock ``Parsing the data and ideology of the we are 99\% tumblr,'' 2011.
 
 \end{thebibliography}
