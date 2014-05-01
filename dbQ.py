@@ -1,27 +1,20 @@
-#do some stuff with the db and a message queue here
 from datetime import datetime as time
 import os
-import sqlite3
+import sqlalchemy
+from models import Post, Tag, User, Note
 from multiprocessing import Queue, Manager
 from queue import Empty
 
+
 def dbQ(crawlQ, end, debug):
-    #determines how many entries we write before committing.
+    # determines how many entries we write before committing.
     writeThresh = 2500
 
     writesInBatch = 0;
     pid = os.getpid()
-    #temporary while we figure out how to get the database sharing 
-    #figured out
-    conn = sqlite3.connect('database/weekday_' + str(pid) +'.db')
-    db = conn.cursor()
-    db.execute('''create table if not exists users
-    (username text, lastUpdated text, postCount integer)''')
-    db.execute('''create table if not exists posts
-    (username text, postID text, type text, date text, noteCount integer)''')
-    db.execute('''create table if not exists notes
-    (username text, rebloggedFrom text, postID text, type text)''')
-    conn.commit()
+    # temporary while we figure out how to get the database sharing 
+    # figured out
+    engine = create_engine('postgresql://admin:password@localhost/crawlbr', echo=True)
     #logging
     f = open(('database/workers/logfile_db_' + str(pid)), 'w')
     if debug:
