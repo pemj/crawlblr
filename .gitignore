@@ -23,4 +23,5 @@ crawl.lock
 *.ps
 *.pdf
 /results/*
+/database/*
 #*
