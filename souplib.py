@@ -11,6 +11,12 @@ import os
 
 
 
+def openSafely(url):
+
+
+
+
+
 def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
         username = userDeck.get(True, 5)
@@ -26,17 +32,12 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
     blogString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/info?api_key="+apikey
-    #compile some regular expressions for rapid searches later
-    nextPattern = re.compile('.*tumblrReq\.open(\(.*?\))')
-    datePattern = re.compile('.*\"date\"\:\"(.*?\")')
-    sourcePattern = re.compile('.*source_url\"\:\"http\:\\\\/\\\\/(.*?\.tumblr\.com)')
-    typePattern = re.compile('.*type\"\:\"(.*?\")')
-    postPattern = re.compile('.*\"posts\"\:(.*?,)')
-    updatedPattern = re.compile('.*\"updated\"\:(.*?,)')
-    notePattern = re.compile('.*\"note_count\"\:(.*?,)')
-    prevPost = set()
+    postString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/posts?api_key="+apikey
     
-    #Open first user page
+
+
+    ##################################USER section######################
+    #get user info
     fChecker = True
     for i in range(5):
         try:
@@ -56,37 +57,42 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     if fChecker:
         f.write("unknown error in blogString\n")
         return "nope"
-        
-    #parse user page
-    infoBlob = BeautifulSoup(blogject).prettify()
-    blogject.close()
-    postCount = re.search(postPattern, infoBlob)
-    postCount = postCount.groups(1)[0].rstrip(",")
-    updated = re.search(updatedPattern, infoBlob)
-    updated = updated.groups(1)[0].rstrip(",")
-
-    #we'll want to grab the name and post-count from user.
     
-    #Then we want to grab the post ID for each of their posts.
+    info = blogject.read().decode('utf-8')
+    if(info['meta']['msg'] != "OK"):
+        f.write("Bad user info page, " + info['meta']['msg'])
+        return "nope"
+    blogURL = info['response']['blog']['url']
+    username = info['response']['blog']['title']
+    updated = info['response']['blog']['updated']
+    #how stupid is that line up there, right?  Just, just let it go.
+    postCount = info['response']['blog']['posts']
+    #if they make likes public
+    if info['response']['blog']['share_likes']:
+        likeCount = info['response']['blog']['likes']
+    else:
+        likeCount = -1
+    userArgs = (username, updated, postCount, likeCount)
+    if debug:
+        f.write("[DEBUG] user written: "+str(userArgs) + "\n")
+    #off to the database
+    dataQ.put(userArgs)
     
-    # then, 
     
-    #initialize some conditions.
-    hasNotes = True
-    blogURL = "http://"+username+".tumblr.com/page/"
-    pageNum = 0
-
-    #while our page has posts on it
-    while(hasNotes):
+    #################################POSTS section######################
+    
+    offset=0
+    #while we have yet to hit the final posts
+    while(offset < postCount):
         if(debug):
-            f.write("[DEBUG] page:" + blogURL+(str(pageNum))+"\n")
-        #try to open the post page
+            f.write("[DEBUG] user:" + username+", offset: "+(str(offset))+"\n")
+            #try to open the post page
         fChecker = True
         for i in range(5):
             try:
-                unSouped = request.urlopen(blogURL+(str(pageNum)))
+                posts = request.urlopen(poststring+"&notes_info=True&reblog_info&offset="(str(offset)))
             except error.HTTPError:
-                f.write("[ERROR] 404: unSouped"+blogURL+str(pageNum)+"\n")
+                f.write("[ERROR] 404: unSouped"+blogURL+str(offset)+"\n")
                 continue
             except error.URLError:
                 f.write("[ERROR] name error: unSouped\n")
@@ -96,17 +102,46 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
                 fChecker = False
                 break 
         if fChecker:
-            return "nope"
+            return "nope"            
+        posts = posts.read().decode('UTF-8')
+        postIDs = set()
+        #for each post in our returned post object
+        for post in posts['response']['posts']:
+            postNumber = post['id']
+            if postNumber in postIDs:
+                continue
+                postIDs.push(postNumber)
+            
+            postType = post['type']
+            postDate = post['timestamp']
+            noteCount = post['note_count']
+            #if this may be reblogged
+            if 'title' in post.keys():
+                identity = post['title']
+                if (identity not in usersSeen):
+                    usersSeen[identity] = 0
+                    userDeck.put(identity)
+                usersSeen[identity] += 1
 
-        pageNum += 1
-        #store this for when we have to extract note strings from a page
-        pageName = unSouped.geturl()
-        noteString, nil, nil = pageName.rpartition("/page/")
-        noteString = noteString + "/post/"
+            postArgs = (username, postNumber, postType, postDate, noteCount)
+            if debug:
+                f.write("[DEBUG] post written: "+str(postArgs) + "\n")
+            dataQ.put(postArgs)
+        
 
-        page = BeautifulSoup(unSouped)        
-        unSouped.close()
-        hasNotes = False
+
+
+
+
+
+
+
+
+
+
+
+
+    hasNotes = False
         #for each post in a page     
         for post in page.find_all(href=re.compile(noteString)):              
             hasNotes = True
