@@ -1,27 +1,22 @@
 from urllib import request, error
 import socket
-from bs4 import BeautifulSoup
-from multiprocessing import Queue, Manager
 from queue import Empty
-import re
-import datetime
-from time import sleep
 import os
-#for some user
+# for some user
 
 
-#opens a URL, uses JSON decoding to turn it into a dictionary, checks 
-#for validity.  Retries a few times if it breaks
-#Parameters: 
-#url: type: string, contents: URL representing a tumblr API request
-#segment: type: string, contents: the code segment identifier
-def openSafely(url, segment):
+# opens a URL, uses JSON decoding to turn it into a dictionary, checks
+# for validity.  Retries a few times if it breaks
+# Parameters:
+# url: type: string, contents: URL representing a tumblr API request
+# segment: type: string, contents: the code segment identifier
+def openSafely(url, segment, f):
     fChecker = True
     for i in range(2):
         try:
             page = request.urlopen(url)
         except error.HTTPError:
-            f.write("404, "+segment+": "+url+"\n")
+            f.write("404, "+segment+": " + url + "\n")
             break
         except error.URLError:
             f.write("URL error, "+segment+"\n")
@@ -31,42 +26,41 @@ def openSafely(url, segment):
             break
         else:
             fChecker = False
-            break 
+            break
     if fChecker:
-        f.write("unknown error in "+segment+"\n")
+        f.write("unknown error in " + segment + "\n")
         return False
 
     page = page.read().decode('utf-8')
-    if(info['meta']['msg'] != "OK"):
-        f.write("Bad " + segment + " page, error code" + info['meta']['msg'])
+    if(page['meta']['msg'] != "OK"):
+        f.write("Bad " + segment + " page, error code " + page['meta']['msg'])
         return "nope"
     return page
-
-
 
 
 def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
         username = userDeck.get(True, 5)
     except Empty:
-        return "nope\n"           
+        return "nope\n"
     if hasattr(os, 'getppid'):  # only available on Unix
         pid = os.getppid()
         print('parent process:', pid)
     pid = os.getpid()
     print('process id:', pid)
     f = open(('database/crawlers/logfile_'+str(pid)), 'w')
-    f.write("begin crawler"+ str(pid)+"\n")
-    
-    apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
-    blogString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/info?api_key="+apikey
-    postString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/posts?api_key="+apikey
-    noteString = "http://api.tumblr.com/v2/blog/"+username+".tumblr.com/likes?api_key="+apikey
+    f.write("begin crawler" + str(pid) + "\n")
 
+    apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
+    blogString = "http://api.tumblr.com/v2/blog/" + username + ".tumblr.com/info?api_key=" + apikey
+    postString = "http://api.tumblr.com/v2/blog/"
+	+ username +
+	".tumblr.com/posts?api_key=" + apikey
+    noteString = "http://api.tumblr.com/v2/blog/" + username + ".tumblr.com/likes?api_key=" + apikey
 
     ##################################USER section######################
     #get user info
-    info = openSafely(blogString, "user info")
+    info = openSafely(blogString, "user info", f)
     if not info:
         return "info error"
 
@@ -88,8 +82,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     
     
     #################################POSTS section######################
-    
-    offset=0
+	offset = 0
     previousPosts = set()
     recentPosts = set()
     #while we have yet to hit the final posts
@@ -98,7 +91,9 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
         if(debug):
             f.write("[DEBUG] user:" + username+", post offset: "+(str(offset))+"\n")
             #try to open the post page
-        posts = openSafely(poststring+"&notes_info=True&reblog_info&offset="+(str(offset)))
+        posts = openSafely(postString +
+                            "&notes_info=True&reblog_info&offset=" +
+                            (str(offset)), "posts section", f)
         if not posts:
             continue
 
@@ -132,11 +127,11 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
         recentPosts = set()
 
     #################################LIKES section######################
-    offset=0
+    offset = 0
     #while we have yet to hit the final likes
     while(offset < likeCount):
         if(debug):
-            f.write("[DEBUG] user:" + username+", note offset: "+(str(offset))+"\n")
+            f.write("[DEBUG] user:" + username+", note offset: " + (str(offset))+"\n")
             #try to open the note page
         notes = openSafely(notestring+(str(offset)))
         if not notes:
