@@ -16,7 +16,7 @@ else:
         else:
             print("Starting a crawler")
             f = open('crawl.lock', 'w+')
-            f.write(str(subprocess.Popen(['python3', 'main.py']).pid))
+            f.write(str(subprocess.Popen(['python3', 'crawlblr/main.py']).pid))
     else:
         if os.path.isfile('crawl.lock'):
             print("Sending kill message to current crawler instance")
