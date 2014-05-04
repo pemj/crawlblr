@@ -22,4 +22,4 @@ crawl.lock
 *.cls
 *.ps
 *.pdf
-/results*
+/results/*
