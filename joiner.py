@@ -12,11 +12,11 @@ dbFiles = [x for x in li if filePattern.match(x)]
 #initialize the destination database
 conn = sqlite3.connect('database/finaltimate.db')
 c = conn.cursor()
-c.execute('''create table if not exists users
+c2.execute('''create table if not exists users
 (username text, lastUpdated text, postCount integer)''')
-c.execute('''create table if not exists posts
+c2.execute('''create table if not exists posts
 (username text, postID text, type text, date text, noteCount integer)''')
-c.execute('''create table if not exists notes
+c2.execute('''create table if not exists notes
 (username text, rebloggedFrom text, postID text, type text)''')
 conn.commit()
 
@@ -38,3 +38,5 @@ c.close()
 
 
 print(dbFiles)
+
+'''INSERT INTO notes SELECT DISTINCT notes.* from toMerge.users INNER JOIN toMerge.notes ON users.username = toMerge.notes.username'''

@@ -1,0 +1,10 @@
+start monitor
+[DEBUG] Queue length = 0, changed by 0, at time = 2014-03-10 14:28:03.128528
+[DEBUG] Queue length = 0, changed by 0, at time = 2014-03-10 14:28:33.159072
+[DEBUG] Queue length = 0, changed by 0, at time = 2014-03-10 14:29:03.165084
+[DEBUG] Queue length = 0, changed by 0, at time = 2014-03-10 14:29:33.194861
+[DEBUG] Queue length = 0, changed by 0, at time = 2014-03-10 14:30:03.195496
+[DEBUG] Queue length = 0, changed by 0, at time = 2014-03-10 14:30:33.225886
+[DEBUG] Queue length = 0, changed by 0, at time = 2014-03-10 14:31:03.249816
+[DEBUG] Queue length = 4, changed by 4, at time = 2014-03-10 14:31:33.259103
+[DEBUG] Queue length = 8, changed by 4, at time = 2014-03-10 14:32:03.289515

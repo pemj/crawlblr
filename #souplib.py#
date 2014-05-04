@@ -17,6 +17,7 @@ def openSafely(url):
 
 
 
+
 def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
         username = userDeck.get(True, 5)

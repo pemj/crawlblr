@@ -49,6 +49,5 @@ latestUser.py - the latest version of one of the more interesting
 problems we encountered: the inference of following relationships 
 from user->content relations.  This is the most efficient version, 
 developed thus far, but it contains only a crude simulacrum of the 
-algorithm identified in our paper.
-
-but is still largely a mockup of the features that an
+algorithm identified in our paper, designed to test the efficacy 
+of our base assumptions on a subset of our database.
