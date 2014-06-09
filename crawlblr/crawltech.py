@@ -2,6 +2,7 @@ from urllib import request, error
 import socket
 from queue import Empty
 import os
+import json
 # for some user
 
 
@@ -32,6 +33,7 @@ def openSafely(url, segment, f):
         return False
 
     page = page.read().decode('utf-8')
+    page = json.loads(page)
     if(page['meta']['msg'] != "OK"):
         f.write("Bad " + segment + " page, error code " + page['meta']['msg'])
         return "nope"
@@ -53,9 +55,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
 
     apikey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv"
     blogString = "http://api.tumblr.com/v2/blog/" + username + ".tumblr.com/info?api_key=" + apikey
-    postString = "http://api.tumblr.com/v2/blog/"
-	+ username +
-	".tumblr.com/posts?api_key=" + apikey
+    postString = "http://api.tumblr.com/v2/blog/" + username + ".tumblr.com/posts?api_key=" + apikey
     noteString = "http://api.tumblr.com/v2/blog/" + username + ".tumblr.com/likes?api_key=" + apikey
 
     ##################################USER section######################
@@ -82,7 +82,7 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     
     
     #################################POSTS section######################
-	offset = 0
+    offset = 0
     previousPosts = set()
     recentPosts = set()
     #while we have yet to hit the final posts
@@ -103,12 +103,12 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
             postNumber = post['id']
             if postNumber in previousPosts:
                 continue
-            recentPosts.push(postNumber)
+            recentPosts.add(postNumber)
             
             postType = post['type']
             postDate = post['timestamp']
             noteCount = post['note_count']
-#########Reblogged Section###################
+	#########Reblogged Section###################
             if 'reblogged_from_name' in post.keys():
                 identity = post['reblogged_from_name']
                 noteArgs = (username, identity, postNumber, "reblog")
@@ -146,4 +146,4 @@ def crawlUser(userDeck, usersSeen, dataQ, end, debug):
             if debug:
                 f.write("[DEBUG] like written: "+str(noteArgs) + "\n")
             dataQ.put(noteArgs)
-            note['id']
+            
