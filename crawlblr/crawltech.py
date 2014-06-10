@@ -41,9 +41,10 @@ def openSafely(url, segment, f):
 
 def stubCrawl(userDeck, usersSeen, dataQ, end, debug):
     args = ("dduane", "01", 0, 0)
-    while True:
+    while dataQ.qsize() < 1000000:
         dataQ.put(args)
-
+    return
+        
 def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
         username = userDeck.get(True, 5)
