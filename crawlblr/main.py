@@ -1,8 +1,8 @@
 # /usr/bin/python3
 import datetime
 import time
-from souplib import crawlUser
-from dbQ import dbQ
+from crawltech import crawlUser
+from olddbQ import dbQ
 import multiprocessing
 import fileinput
 import signal
@@ -65,7 +65,8 @@ def userize(userDeck, usersSeen, dataQ, end, debug):
             return
         if(userDeck):
             done = 0
-            result = crawlUser(userDeck, usersSeen, dataQ, end, debug)
+            #result = crawlUser(userDeck, usersSeen, dataQ, end, debug)
+            result = stubCrawl(userDeck, usersSeen, dataQ, end, debug)
         else: 
             done += 1
             time.sleep(1)
@@ -87,8 +88,8 @@ def dataEntry(dataDeck, num, end, debug):
 
 def f1():
     #degree of multiprocessing
-    degDB = 200
-    degreeCrawl = 400
+    degDB = 1
+    degreeCrawl = 1
     
     global manager
     global crawlEnd

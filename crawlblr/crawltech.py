@@ -39,6 +39,10 @@ def openSafely(url, segment, f):
         return "nope"
     return page
 
+def stubCrawl(userDeck, usersSeen, dataQ, end, debug):
+    args = ("dduane", "01", 0, 0)
+    while True:
+        dataQ.put(args)
 
 def crawlUser(userDeck, usersSeen, dataQ, end, debug):
     try:
