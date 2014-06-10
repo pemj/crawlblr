@@ -7,7 +7,7 @@ from queue import Empty
 
 def dbQ(crawlQ, end, debug):
     #determines how many entries we write before committing.
-    writeThresh = 500
+    writeThresh = 2500
 
     writesInBatch = 0;
     pid = os.getpid()
@@ -37,6 +37,7 @@ def dbQ(crawlQ, end, debug):
         try:
             dbEntry = crawlQ.get(True, 1);
         except Empty:
+            return
             continue
         if len(dbEntry) == 3:
             db.execute('INSERT INTO users ' +
@@ -62,8 +63,10 @@ def dbQ(crawlQ, end, debug):
         #so, at the minimum, we'll need to pass the connection
         if(writesInBatch >= writeThresh):
             conn.commit()
-            if debug:
-                f.write("[DEBUG] Wrote " + str(writesInBatch) + " to the DB at " + str(time.now())+"\n")
+            #            if debug:
+            f.write(str(time.now()))
+            #f.write("[DEBUG] Wrote " + str(writesInBatch) + " to the DB at " + str(time.now())+"\n")
+            f.flush()
             writesInBatch = 0
         #we do close at the cursor though, so there's that.
     db.close()
