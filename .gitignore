@@ -2,6 +2,7 @@
 *.db
 *.swp
 nohup.out
+a.out
 time/*
 time
 sqlite3/*
