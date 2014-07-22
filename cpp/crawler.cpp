@@ -1,3 +1,4 @@
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <pqxx/pqxx>
@@ -37,13 +38,47 @@ int openSafely(std::string *url, Document d, int segment, std::ofstream errLog){
     errLog << "curl init error " << curl << ", at segment " << segment << std::endl;
     return 1;
   }
+
   d.Parse<0>(read_buffer->c_str());
   std::cout << *read_buffer << std::endl;
   return 0;
 }
 
+int crawlUser(){
+  std::ofstream errLog;
+  errLog.open("output.txt", std::ofstream::out | std::ofstream::app);
+  std::string apiKey = "IkJtqSbg6Nd3OBnUdaGl9YWE3ocupygJcnPebHRou8eFbd4RUv";
+  std::string username = "dduane";
+  std::string blogString = string("http://api.tumblr.com/v2/blog/") + username + string(".tumblr.com/info?api_key=")  + apiKey;
+  std::string postString = string("http://api.tumblr.com/v2/blog/") + username + string(".tumblr.com/posts?api_key=") + apiKey;
+  std::string noteString = string("http://api.tumblr.com/v2/blog/") + username + string(".tumblr.com/likes?api_key=") + apiKey;
+  Document response;
 
-int main(int argc, char **argv){
-
+  /*user section
+    expect this to add a user field to the database.
+   */
+  if (1 == openSafely(blogString, response, 0, errLog)){
+    return 1;
+  }
+  int likeCount = 0;
+  std::string blogURL = response['response']['blog']['url'];
+  std::string username = response['response']['blog']['title'];
+  std::string updated = response['response']['blog']['updated'];
+  std::string postCount = response['response']['blog']['posts'];
+  if(response['response']['blog']['share_likes']){
+    likeCount = response['response']['blog']['share_likes'];
+  }else{
+    likeCount = -1
+  }
+  errLog << "wrote all the record";
   return 0;
 }
+
+int main(int argc, char **argv){
+  int id = argv[1];//get a process id of some sort
+  bool debug = 1;
+  int ret = crawlUser();
+  return 0;
+}
+
+
